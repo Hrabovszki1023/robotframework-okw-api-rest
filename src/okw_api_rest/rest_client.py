@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 import os
 
 import requests
 from requests.auth import HTTPBasicAuth
+from robot.api import logger
 
 from .rest_context import RestContext
 
@@ -98,5 +100,56 @@ def send_request(ctx: RestContext, method: str) -> None:
         else:
             kwargs["json"] = body
 
+    _log_request(method, url, headers, params, body, content_type)
     response = requests.request(method, url, **kwargs)
     ctx.store_response(response)
+    _log_response(response)
+
+
+def _mask_sensitive(obj, _depth=0):
+    """Mask password fields in a dict for safe logging."""
+    if not isinstance(obj, dict) or _depth > 10:
+        return obj
+    masked = {}
+    for k, v in obj.items():
+        if "password" in k.lower() or "token" in k.lower() or "secret" in k.lower():
+            masked[k] = "***"
+        elif isinstance(v, dict):
+            masked[k] = _mask_sensitive(v, _depth + 1)
+        else:
+            masked[k] = v
+    return masked
+
+
+def _log_request(method, url, headers, params, body, content_type):
+    """Log request details as formatted JSON to Robot log."""
+    parts = [f">>> {method} {url}"]
+
+    if params:
+        parts.append(f"    Query: {json.dumps(params, ensure_ascii=False)}")
+
+    if body:
+        safe_body = _mask_sensitive(body) if isinstance(body, dict) else body
+        try:
+            formatted = json.dumps(safe_body, indent=2, ensure_ascii=False)
+        except (TypeError, ValueError):
+            formatted = str(safe_body)
+        parts.append(f"    Request Body:\n{formatted}")
+
+    logger.info("\n".join(parts))
+
+
+def _log_response(response):
+    """Log response status and body as formatted JSON to Robot log."""
+    parts = [f"<<< {response.status_code} {response.reason}"]
+
+    body = response.text
+    if body:
+        try:
+            parsed = json.loads(body)
+            formatted = json.dumps(parsed, indent=2, ensure_ascii=False)
+        except (json.JSONDecodeError, ValueError):
+            formatted = body
+        parts.append(f"    Response Body:\n{formatted}")
+
+    logger.info("\n".join(parts))
