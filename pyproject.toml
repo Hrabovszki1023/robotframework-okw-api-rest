@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robotframework-okw-api-rest"
+version = "0.1.0"
+description = "REST API driver for OKW4Robot - keyword-driven REST API test automation."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["robotframework", "testing", "testautomation", "api", "rest", "okw"]
+dependencies = [
+  "robotframework>=6.0",
+  "requests>=2.28",
+  "PyYAML>=6.0",
+  "okw-contract-utils>=0.2.0",
+]
+authors = [
+  { name = "Zoltán Hrabovszki" }
+]
+license = { file = "LICENSE" }
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Framework :: Robot Framework",
+  "Framework :: Robot Framework :: Library",
+  "Topic :: Software Development :: Testing",
+]
+
+[project.urls]
+Repository = "https://github.com/Hrabovszki1023/robotframework-okw-api-rest"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+
+[tool.setuptools.package-data]
+okw_api_rest = ["locators/*.yaml"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

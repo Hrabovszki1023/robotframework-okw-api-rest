@@ -1,0 +1,5 @@
+NotesAPI:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: https://practice.expandtesting.com/notes/api
+    content_type: application/x-www-form-urlencoded
