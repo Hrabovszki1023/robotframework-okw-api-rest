@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import yaml
 import os
 
@@ -16,6 +17,37 @@ _IGNORE = "$IGNORE"
 _EMPTY = "$EMPTY"
 
 _mem_store: dict[str, str] = {}
+
+_ENV_RE = re.compile(r"\$\{([A-Za-z0-9_\-\.]+)\}")
+
+
+def _resolve_env_vars(obj, env: dict):
+    """Recursively resolve ${VAR} placeholders in YAML values from env dict."""
+    if isinstance(obj, str):
+        def repl(m):
+            key = m.group(1)
+            if key in env:
+                return str(env[key])
+            # Fall back to OS environment variable
+            os_val = os.environ.get(key)
+            if os_val is not None:
+                return os_val
+            raise ValueError(f"Environment variable '{key}' not found in env file or OS environment.")
+        return _ENV_RE.sub(repl, obj)
+    elif isinstance(obj, dict):
+        return {k: _resolve_env_vars(v, env) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_resolve_env_vars(v, env) for v in obj]
+    return obj
+
+
+def _load_env_file(env_path: str) -> dict:
+    """Load a YAML environment file and return its contents as a dict."""
+    if not os.path.isfile(env_path):
+        raise FileNotFoundError(f"Environment file not found: {env_path}")
+    with open(env_path, encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return data if isinstance(data, dict) else {}
 
 
 def _expand(value: str) -> str:
@@ -98,17 +130,72 @@ class OkwApiRestLibrary:
             f"Searched: {search_dirs}"
         )
 
+    def _find_env_file(self, env_name: str, service_name: str) -> str:
+        """Find environment YAML file by name.
+
+        Search order (like ~/.ssh/ convention):
+        1. ~/.okw/env/          (user profile — secure, not in repo)
+        2. OKW_ENV_DIR env var  (explicit override, e.g. for CI/CD)
+        3. locators/ next to test suite
+        4. test suite directory
+        5. cwd/locators/
+        6. cwd
+        """
+        search_dirs = []
+
+        # 1. User profile: ~/.okw/env/
+        okw_home = os.path.join(os.path.expanduser("~"), ".okw", "env")
+        search_dirs.append(okw_home)
+
+        # 2. OKW_ENV_DIR environment variable
+        env_dir = os.environ.get("OKW_ENV_DIR")
+        if env_dir:
+            search_dirs.append(env_dir)
+
+        # 3+4. Next to test suite
+        try:
+            from robot.libraries.BuiltIn import BuiltIn
+            suite_source = BuiltIn().get_variable_value("${SUITE SOURCE}")
+            if suite_source:
+                search_dirs.append(os.path.join(os.path.dirname(suite_source), "locators"))
+                search_dirs.append(os.path.dirname(suite_source))
+        except Exception:
+            pass
+
+        # 5+6. Current working directory
+        search_dirs.append(os.path.join(os.getcwd(), "locators"))
+        search_dirs.append(os.getcwd())
+
+        for d in search_dirs:
+            for ext in (".yaml", ".yml"):
+                path = os.path.join(d, f"{env_name}{ext}")
+                if os.path.isfile(path):
+                    logger.info(f"RESTStart: Found env file at {path}")
+                    return path
+
+        raise FileNotFoundError(
+            f"Environment file '{env_name}' not found. "
+            f"Searched: {search_dirs}"
+        )
+
     # ── Start / Stop ────────────────────────────────────────────
 
     @keyword("RESTStart")
-    def rest_start(self, service: str):
+    def rest_start(self, service: str, env: str | None = None):
         """Starts a REST service session.
 
         Loads the YAML configuration for the given service name and
-        initialises the REST context with base URL and content type.
+        initialises the REST context with base URL, content type,
+        authentication, and SSL settings.
+
+        The optional ``env`` parameter specifies an environment file
+        (YAML) whose values replace ``${VAR}`` placeholders in the
+        service YAML. If omitted, placeholders are resolved from OS
+        environment variables.
 
         Examples:
         | RESTStart | NotesAPI |
+        | RESTStart | NotesAPI | env-test |
         """
         logger.info(f"RESTStart: Loading service '{service}'...")
         model = self._load_yaml(service)
@@ -117,7 +204,17 @@ class OkwApiRestLibrary:
             raise KeyError(f"Service '{service}' not found in YAML root.")
 
         svc_model = model[service]
+
+        # Load environment variables for ${VAR} resolution
+        env_vars = {}
+        if env:
+            env_path = self._find_env_file(env, service)
+            env_vars = _load_env_file(env_path)
+            logger.info(f"RESTStart: Loaded env file '{env}' ({len(env_vars)} variables).")
+
+        # Resolve ${VAR} placeholders in __self__
         self_cfg = svc_model.get("__self__", {})
+        self_cfg = _resolve_env_vars(self_cfg, env_vars)
 
         base_url = self_cfg.get("base_url")
         if not base_url:
@@ -125,9 +222,29 @@ class OkwApiRestLibrary:
 
         content_type = self_cfg.get("content_type", "application/json")
 
-        self._ctx = RestContext(base_url=base_url, content_type=content_type)
+        # Authentication config
+        auth_keys = {"auth_type", "auth_user", "auth_password",
+                     "auth_header", "auth_key", "auth_token"}
+        auth_cfg = {k: v for k, v in self_cfg.items() if k in auth_keys}
+
+        # SSL config
+        ssl_keys = {"verify_ssl", "client_cert", "client_key", "ca_bundle"}
+        ssl_cfg = {k: v for k, v in self_cfg.items() if k in ssl_keys}
+
+        self._ctx = RestContext(
+            base_url=base_url,
+            content_type=content_type,
+            auth=auth_cfg,
+            ssl=ssl_cfg,
+        )
         self._service_name = service
-        logger.info(f"RESTStart: Service '{service}' active (base_url={base_url}).")
+
+        auth_type = auth_cfg.get("auth_type", "none")
+        verify = ssl_cfg.get("verify_ssl", True)
+        logger.info(
+            f"RESTStart: Service '{service}' active "
+            f"(base_url={base_url}, auth={auth_type}, verify_ssl={verify})."
+        )
 
     @keyword("RESTStop")
     def rest_stop(self):

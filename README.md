@@ -197,6 +197,96 @@ Three levels: no argument = default sent, custom value = override, `$IGNORE` = f
 
 ---
 
+## Environment Configuration
+
+Separate credentials and URLs from the service YAML using environment
+files — like `~/.ssh/` keeps keys out of your projects.
+
+### Service YAML (safe for repo)
+
+```yaml
+NotesAPI:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: ${BASE_URL}
+    content_type: ${CONTENT_TYPE}
+```
+
+### Environment file (in user profile, NOT in repo)
+
+```yaml
+# ~/.okw/env/env-test.yaml
+BASE_URL: https://practice.expandtesting.com/notes/api
+CONTENT_TYPE: application/x-www-form-urlencoded
+```
+
+### Test file
+
+```robot
+RESTStart    NotesAPI    env-test
+```
+
+### Search order for env files
+
+| Priority | Path | Purpose |
+|---|---|---|
+| 1 | `~/.okw/env/` | User profile (secure) |
+| 2 | `$OKW_ENV_DIR` | CI/CD override |
+| 3 | `locators/` next to test | Development |
+| 4 | OS environment variables | Fallback |
+
+---
+
+## Authentication
+
+Configured in YAML `__self__` — no credentials in test code.
+
+```yaml
+# Basic Auth
+auth_type: basic
+auth_user: ${API_USER}
+auth_password: ${API_PASSWORD}
+
+# API Key
+auth_type: api_key
+auth_header: X-API-Key
+auth_key: ${API_KEY}
+
+# Bearer Token (static)
+auth_type: bearer
+auth_token: ${AUTH_TOKEN}
+```
+
+For dynamic tokens (login flow), use `RESTMemorizeValue` + `RESTSetHeader`.
+
+---
+
+## SSL / Certificates
+
+```yaml
+verify_ssl: false                        # self-signed certs
+client_cert: ~/.okw/certs/client.pem     # mTLS
+client_key: ~/.okw/certs/client.key
+ca_bundle: ~/.okw/certs/ca-bundle.pem    # custom CA
+```
+
+Paths support `~` and `$ENV_VAR` expansion.
+
+### User profile structure
+
+```
+~/.okw/
+  env/
+    env-test.yaml       # credentials + URLs
+    env-prod.yaml
+  certs/
+    client.pem          # client certificate
+    client.key          # private key
+    ca-bundle.pem       # custom CA
+```
+
+---
+
 ## Complete Example: Login + CRUD
 
 ```robot

@@ -197,6 +197,96 @@ Drei Stufen: kein Argument = Default wird gesendet, eigener Wert = ueberschreibt
 
 ---
 
+## Umgebungskonfiguration
+
+Credentials und URLs werden per Environment-Datei vom Service-YAML
+getrennt — wie `~/.ssh/` die Keys aus den Projekten heraushalt.
+
+### Service-YAML (sicher fuer Repo)
+
+```yaml
+NotesAPI:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: ${BASE_URL}
+    content_type: ${CONTENT_TYPE}
+```
+
+### Environment-Datei (im Userprofil, NICHT im Repo)
+
+```yaml
+# ~/.okw/env/env-test.yaml
+BASE_URL: https://practice.expandtesting.com/notes/api
+CONTENT_TYPE: application/x-www-form-urlencoded
+```
+
+### Testdatei
+
+```robot
+RESTStart    NotesAPI    env-test
+```
+
+### Suchordnung fuer Env-Dateien
+
+| Prioritaet | Pfad | Zweck |
+|---|---|---|
+| 1 | `~/.okw/env/` | Userprofil (sicher) |
+| 2 | `$OKW_ENV_DIR` | CI/CD Override |
+| 3 | `locators/` neben Test | Entwicklung |
+| 4 | OS-Umgebungsvariablen | Fallback |
+
+---
+
+## Authentifizierung
+
+Im YAML `__self__` konfiguriert — keine Credentials im Testcode.
+
+```yaml
+# Basic Auth
+auth_type: basic
+auth_user: ${API_USER}
+auth_password: ${API_PASSWORD}
+
+# API Key
+auth_type: api_key
+auth_header: X-API-Key
+auth_key: ${API_KEY}
+
+# Bearer Token (statisch)
+auth_type: bearer
+auth_token: ${AUTH_TOKEN}
+```
+
+Fuer dynamische Token (Login-Flow) `RESTMemorizeValue` + `RESTSetHeader` verwenden.
+
+---
+
+## SSL / Zertifikate
+
+```yaml
+verify_ssl: false                        # Self-signed Certs
+client_cert: ~/.okw/certs/client.pem     # mTLS
+client_key: ~/.okw/certs/client.key
+ca_bundle: ~/.okw/certs/ca-bundle.pem    # Custom CA
+```
+
+Pfade unterstuetzen `~` und `$ENV_VAR` Expansion.
+
+### Verzeichnisstruktur im Userprofil
+
+```
+~/.okw/
+  env/
+    env-test.yaml       # Credentials + URLs
+    env-prod.yaml
+  certs/
+    client.pem          # Client-Zertifikat
+    client.key          # Private Key
+    ca-bundle.pem       # Custom CA
+```
+
+---
+
 ## Vollstaendiges Beispiel: Login + CRUD
 
 ```robot

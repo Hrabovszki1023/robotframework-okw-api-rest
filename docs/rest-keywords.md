@@ -28,25 +28,125 @@ Keyword-driven REST API testing for OKW4Robot.
 ## RESTStart
 
 Starts the REST service. Loads the YAML configuration with base URL
-and connection settings.
+and connection settings. Optionally loads an environment file for
+variable resolution.
 
 | Parameter | Description |
 |---|---|
 | `service` | Name of the YAML service definition |
+| `env` | (optional) Name of the environment file |
 
 ```robot
 RESTStart    NotesAPI
+RESTStart    NotesAPI    env-test
+RESTStart    NotesAPI    env-prod
 ```
 
-YAML definition:
+### Basic YAML definition
 
 ```yaml
 # NotesAPI.yaml
 NotesAPI:
   __self__:
-    class: okw_api_rest.adapters.rest_adapter.RestAdapter
+    class: okw_api_rest.library.OkwApiRestLibrary
     base_url: https://practice.expandtesting.com/notes/api
     content_type: application/x-www-form-urlencoded
+```
+
+### YAML with environment variables
+
+Placeholders `${VAR}` are resolved from the environment file or OS
+environment variables. This keeps credentials and URLs out of the
+service YAML.
+
+```yaml
+# NotesAPI.yaml — no secrets, safe for repo
+NotesAPI:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: ${BASE_URL}
+    content_type: ${CONTENT_TYPE}
+```
+
+```yaml
+# env-test.yaml — in ~/.okw/env/, NOT in the repo
+BASE_URL: https://practice.expandtesting.com/notes/api
+CONTENT_TYPE: application/x-www-form-urlencoded
+```
+
+### Environment file search order
+
+Like `~/.ssh/`, environment files are searched in a fixed order:
+
+| Priority | Path | Purpose |
+|---|---|---|
+| 1 | `~/.okw/env/` | User profile (secure, not in repo) |
+| 2 | `$OKW_ENV_DIR` | CI/CD override |
+| 3 | `locators/` next to test | Development convenience |
+| 4 | OS environment variables | Fallback for individual `${VAR}` |
+
+### Authentication
+
+Authentication is configured in `__self__`. The test only calls
+`RESTStart` — no credentials in test code.
+
+**Basic Auth:**
+
+```yaml
+__self__:
+  base_url: ${BASE_URL}
+  auth_type: basic
+  auth_user: ${API_USER}
+  auth_password: ${API_PASSWORD}
+```
+
+**API Key (header-based):**
+
+```yaml
+__self__:
+  base_url: ${BASE_URL}
+  auth_type: api_key
+  auth_header: X-API-Key
+  auth_key: ${API_KEY}
+```
+
+**Bearer Token (static, from env file):**
+
+```yaml
+__self__:
+  base_url: ${BASE_URL}
+  auth_type: bearer
+  auth_token: ${AUTH_TOKEN}
+```
+
+Note: For dynamic tokens (login → token → use), use
+`RESTMemorizeValue` + `RESTSetHeader` in the test — that is test
+logic, not infrastructure.
+
+### SSL / Certificates
+
+```yaml
+__self__:
+  base_url: ${BASE_URL}
+  verify_ssl: false                  # self-signed certs
+  client_cert: ~/.okw/certs/client.pem   # mTLS client certificate
+  client_key: ~/.okw/certs/client.key    # private key
+  ca_bundle: ~/.okw/certs/ca-bundle.pem  # custom CA
+```
+
+Paths support `~` (home directory) and `$ENV_VAR` expansion.
+
+### User profile directory structure
+
+```
+~/.okw/
+  env/
+    env-test.yaml         # credentials + URLs for test
+    env-prod.yaml         # credentials + URLs for prod
+  certs/
+    client.pem            # client certificate
+    client.key            # private key
+    ca-bundle.pem         # custom CA bundle
 ```
 
 ---

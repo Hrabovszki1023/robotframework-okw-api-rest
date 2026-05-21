@@ -1,0 +1,5 @@
+NotesAPI_env:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: ${BASE_URL}
+    content_type: ${CONTENT_TYPE}

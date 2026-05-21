@@ -4,9 +4,17 @@ from __future__ import annotations
 class RestContext:
     """Holds the mutable state for one REST service session."""
 
-    def __init__(self, base_url: str, content_type: str = "application/json"):
+    def __init__(
+        self,
+        base_url: str,
+        content_type: str = "application/json",
+        auth: dict | None = None,
+        ssl: dict | None = None,
+    ):
         self.base_url = base_url.rstrip("/")
         self.content_type = content_type
+        self.auth = auth or {}
+        self.ssl = ssl or {}
 
         self._endpoint: str | None = None
         self._body: dict = {}
