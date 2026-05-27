@@ -445,6 +445,29 @@ class OkwApiRestLibrary:
             )
         logger.info(f"RESTVerifyStatus: {actual} (PASS)")
 
+    @keyword("RESTVerifyResponseTime")
+    def rest_verify_response_time(self, max_ms: str):
+        """Verifies that the response time is below the given threshold.
+
+        The value is the maximum allowed response time in milliseconds.
+        The actual response time must be **less than** this value.
+
+        Examples:
+        | RESTVerifyResponseTime | 500  |
+        | RESTVerifyResponseTime | 2000 |
+        """
+        if _is_ignore(max_ms):
+            logger.info(f"RESTVerifyResponseTime: $IGNORE (skipped)")
+            return
+        ctx = self._require_ctx()
+        actual = ctx.get_response_time_ms()
+        threshold = float(max_ms)
+        if actual >= threshold:
+            raise AssertionError(
+                f"RESTVerifyResponseTime: {actual:.0f}ms >= {threshold:.0f}ms (too slow)."
+            )
+        logger.info(f"RESTVerifyResponseTime: {actual:.0f}ms < {threshold:.0f}ms (PASS)")
+
     @keyword("RESTVerifyHeader")
     def rest_verify_header(self, header: str, expected: str):
         """Verifies a response header value.

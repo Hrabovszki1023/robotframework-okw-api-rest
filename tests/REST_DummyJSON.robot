@@ -84,6 +84,18 @@ Todos Mit Query Parameter Abrufen
 
     RESTStop
 
+Response Zeit Pruefen
+    RESTStart              DummyJSON
+
+    RESTSelectEndpoint     /todos
+    RESTSetValue           ?limit          1
+    RESTSendRequest        GET
+
+    RESTVerifyStatus       200
+    RESTVerifyResponseTime    5000
+
+    RESTStop
+
 Token Refresh
     RESTStart              DummyJSON
 

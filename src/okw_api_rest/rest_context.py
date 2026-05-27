@@ -93,6 +93,11 @@ class RestContext:
                 return v
         raise KeyError(f"Response header '{name}' not found.")
 
+    def get_response_time_ms(self) -> float:
+        if self._response is None:
+            raise RuntimeError("No response available.")
+        return self._response.elapsed.total_seconds() * 1000
+
     def get_response_body(self) -> str:
         if self._response is None:
             raise RuntimeError("No response available.")
