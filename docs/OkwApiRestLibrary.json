@@ -3,7 +3,7 @@
   "name": "okw_api_rest.library.OkwApiRestLibrary",
   "doc": "<p>OKW keyword-driven REST API testing library.</p>\n<p>Provides keywords for building, sending, and verifying REST API requests following the OKW phase model: Start -&gt; Scope -&gt; Input -&gt; Action -&gt; Verify -&gt; Stop.</p>\n<h2 id=\"Import\">Import</h2>\n<pre>\nLibrary    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI\n</pre>\n<h2 id=\"YAML Configuration\">YAML Configuration</h2>\n<pre>\nNotesAPI:\n  __self__:\n    class: okw_api_rest.library.OkwApiRestLibrary\n    base_url: <a href=\"https://practice.expandtesting.com/notes/api\">https://practice.expandtesting.com/notes/api</a>\n    content_type: application/x-www-form-urlencoded\n</pre>\n<h2 id=\"Example\">Example</h2>\n<pre>\nRESTStart              NotesAPI\nRESTSelectEndpoint     /users/login\nRESTSetValue           email        user@example.com\nRESTSetValue           password     Secret123!\nRESTSendRequest        POST\nRESTVerifyStatus       200\nRESTMemorizeValue      data.token   TOKEN\nRESTStop\n</pre>",
   "version": "0.1.0",
-  "generated": "2026-05-21T16:38:04+00:00",
+  "generated": "2026-05-31T10:42:38+00:00",
   "type": "LIBRARY",
   "scope": "GLOBAL",
   "docFormat": "HTML",
@@ -34,7 +34,7 @@
       "shortdoc": "Stores the entire response body as a string.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 483
+      "lineno": 506
     },
     {
       "name": "RESTMemorizeValue",
@@ -71,7 +71,7 @@
       "shortdoc": "Stores a response field value under a symbolic name.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 468
+      "lineno": 491
     },
     {
       "name": "RESTSelectEndpoint",
@@ -314,6 +314,30 @@
       "shortdoc": "Verifies a response header value.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
+      "lineno": 472
+    },
+    {
+      "name": "RESTVerifyResponseTime",
+      "args": [
+        {
+          "name": "max_ms",
+          "type": {
+            "name": "str",
+            "typedoc": "string",
+            "nested": [],
+            "union": false
+          },
+          "defaultValue": null,
+          "kind": "POSITIONAL_OR_NAMED",
+          "required": true,
+          "repr": "max_ms: str"
+        }
+      ],
+      "returnType": null,
+      "doc": "<p>Verifies that the response time is below the given threshold.</p>\n<p>The value is the maximum allowed response time in milliseconds. The actual response time must be <b>*less than*</b> this value.</p>\n<p>Examples:</p>\n<table border=\"1\">\n<tr>\n<td>RESTVerifyResponseTime</td>\n<td>500</td>\n</tr>\n<tr>\n<td>RESTVerifyResponseTime</td>\n<td>2000</td>\n</tr>\n</table>",
+      "shortdoc": "Verifies that the response time is below the given threshold.",
+      "tags": [],
+      "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
       "lineno": 449
     },
     {
@@ -478,6 +502,7 @@
         "RESTSetValue",
         "RESTStart",
         "RESTVerifyHeader",
+        "RESTVerifyResponseTime",
         "RESTVerifyStatus",
         "RESTVerifyValue",
         "RESTVerifyValueREGX",
