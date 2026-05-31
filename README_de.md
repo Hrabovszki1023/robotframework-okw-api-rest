@@ -83,6 +83,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTVerifyValueWCM` | Response-Feldwert pruefen (Wildcard: `*`, `?`) |
 | `RESTVerifyValueREGX` | Response-Feldwert pruefen (regulaerer Ausdruck) |
 | `RESTVerifyStatus` | HTTP-Statuscode pruefen |
+| `RESTVerifyResponseTime` | Response-Zeit unter Schwellwert pruefen (ms) |
 | `RESTVerifyHeader` | Response-Header pruefen |
 | `RESTMemorizeValue` | Response-Feldwert speichern fuer `$MEM{name}` |
 | `RESTMemorizeBody` | Gesamten Response-Body speichern |
@@ -101,6 +102,7 @@ robot tests/REST_NotesAPI.robot
 | Aktion | `RESTSendRequest` | `ClickOn` |
 | Pruefen | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | -- |
+| Timing | `RESTVerifyResponseTime` | -- |
 | Merken | `RESTMemorizeValue` | `MemorizeValue` |
 | Stop | `RESTStop` | `StopApp` |
 
@@ -283,6 +285,42 @@ Pfade unterstuetzen `~` und `$ENV_VAR` Expansion.
     client.pem          # Client-Zertifikat
     client.key          # Private Key
     ca-bundle.pem       # Custom CA
+```
+
+---
+
+## Response-Zeit pruefen
+
+Pruefen ob die API innerhalb akzeptabler Zeit antwortet:
+
+```robot
+RESTSendRequest        GET
+RESTVerifyResponseTime    500      # Antwort muss unter 500ms sein
+RESTVerifyResponseTime    $IGNORE  # Pruefung ueberspringen
+```
+
+---
+
+## Request/Response Logging
+
+`RESTSendRequest` protokolliert Request und Response automatisch als
+formatiertes JSON im Robot-Log. Sensible Felder (`password`, `token`,
+`secret`) werden im Request-Body mit `***` maskiert.
+
+```
+>>> POST https://dummyjson.com/auth/login
+    Request Body:
+{
+  "username": "emilys",
+  "password": "***"
+}
+
+<<< 200 OK
+    Response Body:
+{
+  "accessToken": "eyJ...",
+  "username": "emilys"
+}
 ```
 
 ---

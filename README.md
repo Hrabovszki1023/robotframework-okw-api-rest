@@ -83,6 +83,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTVerifyValueWCM` | Verify response field value (wildcard: `*`, `?`) |
 | `RESTVerifyValueREGX` | Verify response field value (regular expression) |
 | `RESTVerifyStatus` | Verify HTTP status code |
+| `RESTVerifyResponseTime` | Verify response time is below threshold (ms) |
 | `RESTVerifyHeader` | Verify response header |
 | `RESTMemorizeValue` | Store response field value for `$MEM{name}` |
 | `RESTMemorizeBody` | Store entire response body |
@@ -101,6 +102,7 @@ robot tests/REST_NotesAPI.robot
 | Action | `RESTSendRequest` | `ClickOn` |
 | Verify | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | -- |
+| Timing | `RESTVerifyResponseTime` | -- |
 | Memorize | `RESTMemorizeValue` | `MemorizeValue` |
 | Stop | `RESTStop` | `StopApp` |
 
@@ -283,6 +285,42 @@ Paths support `~` and `$ENV_VAR` expansion.
     client.pem          # client certificate
     client.key          # private key
     ca-bundle.pem       # custom CA
+```
+
+---
+
+## Response Time Verification
+
+Verify that the API responds within acceptable time limits:
+
+```robot
+RESTSendRequest        GET
+RESTVerifyResponseTime    500      # must respond under 500ms
+RESTVerifyResponseTime    $IGNORE  # skip check
+```
+
+---
+
+## Request/Response Logging
+
+`RESTSendRequest` automatically logs request and response as formatted
+JSON in the Robot log. Sensitive fields (`password`, `token`, `secret`)
+are masked with `***` in the request body.
+
+```
+>>> POST https://dummyjson.com/auth/login
+    Request Body:
+{
+  "username": "emilys",
+  "password": "***"
+}
+
+<<< 200 OK
+    Response Body:
+{
+  "accessToken": "eyJ...",
+  "username": "emilys"
+}
 ```
 
 ---
