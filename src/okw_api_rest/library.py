@@ -341,6 +341,27 @@ class OkwApiRestLibrary:
         log_val = "***" if "password" in field.lower() else value
         logger.info(f"RESTSetValueAsString: {field} = '{log_val}' (string)")
 
+    @keyword("RESTSetValueAsList")
+    def rest_set_value_as_list(self, field: str, *values: str):
+        """Sets a request body field as a JSON array.
+
+        All values are auto-typed (integers, floats, booleans are
+        converted). Use for short primitive arrays.
+
+        Examples:
+        | RESTSetValueAsList | tags   | wichtig | dringend | arbeit |
+        | RESTSetValueAsList | scores | 42      | 87       | 15     |
+        | RESTSetValueAsList | flags  | true    | false    | true   |
+        """
+        if len(values) == 1 and _is_ignore(values[0]):
+            logger.info(f"RESTSetValueAsList: {field} = $IGNORE (skipped)")
+            return
+
+        ctx = self._require_ctx()
+        expanded = [_expand(str(v)) for v in values]
+        ctx.set_value_as_list(field, expanded)
+        logger.info(f"RESTSetValueAsList: {field} = [{', '.join(expanded)}]")
+
     @keyword("RESTSetContext")
     def rest_set_context(self, path: str):
         """Sets the context path for subsequent SetValue/VerifyValue calls.

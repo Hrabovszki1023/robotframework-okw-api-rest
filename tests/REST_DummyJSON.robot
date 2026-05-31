@@ -118,3 +118,35 @@ Token Refresh
     RESTVerifyValueREGX    refreshToken    ^eyJ.+
 
     RESTStop
+
+Todo Mit Tags Als Liste
+    RESTStart              DummyJSON
+
+    RESTSelectEndpoint     /todos/add
+    RESTSetValue           todo            Tagged Task
+    RESTSetValue           completed       false
+    RESTSetValue           userId          1
+    RESTSetValueAsList     tags            wichtig    dringend    arbeit
+    RESTSendRequest        POST
+
+    RESTVerifyStatus       201
+    RESTVerifyValue        todo            Tagged Task
+
+    RESTStop
+
+Todo Mit Array Index
+    RESTStart              DummyJSON
+
+    RESTSelectEndpoint     /todos/add
+    RESTSetValue           todo            Indexed Task
+    RESTSetValue           completed       false
+    RESTSetValue           userId          1
+    RESTSetValue           scores[0]       42
+    RESTSetValue           scores[1]       87
+    RESTSetValue           scores[2]       15
+    RESTSendRequest        POST
+
+    RESTVerifyStatus       201
+    RESTVerifyValue        todo            Indexed Task
+
+    RESTStop

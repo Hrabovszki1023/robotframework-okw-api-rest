@@ -43,8 +43,18 @@ class RestContext:
             self._query_params[field[1:]] = value
         elif self._context_path:
             self._set_nested(self._body, f"{self._context_path}.{field}", typed)
+        elif "[" in field:
+            self._set_nested(self._body, field, typed)
         else:
             self._body[field] = typed
+
+    def set_value_as_list(self, field: str, values: list[str]):
+        """Set a field as a JSON array of auto-typed values."""
+        typed_list = [self._auto_type(v) for v in values]
+        if self._context_path:
+            self._set_nested(self._body, f"{self._context_path}.{field}", typed_list)
+        else:
+            self._body[field] = typed_list
 
     @staticmethod
     def _auto_type(value: str):
@@ -153,4 +163,14 @@ class RestContext:
                 target.setdefault(part, {})
                 target = target[part]
         leaf = parts[-1]
-        target[leaf] = value
+        if "[" in leaf:
+            key, idx_str = leaf.split("[", 1)
+            idx = int(idx_str.rstrip("]"))
+            if key:
+                target.setdefault(key, [])
+                target = target[key]
+            while len(target) <= idx:
+                target.append(None)
+            target[idx] = value
+        else:
+            target[leaf] = value
