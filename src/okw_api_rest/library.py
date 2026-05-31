@@ -231,19 +231,36 @@ class OkwApiRestLibrary:
         ssl_keys = {"verify_ssl", "client_cert", "client_key", "ca_bundle"}
         ssl_cfg = {k: v for k, v in self_cfg.items() if k in ssl_keys}
 
+        # Retry config
+        retry_cfg = {}
+        if "retry_count" in self_cfg:
+            retry_cfg["retry_count"] = int(self_cfg["retry_count"])
+        if "retry_delay" in self_cfg:
+            retry_cfg["retry_delay"] = int(self_cfg["retry_delay"])
+        if "retry_on" in self_cfg:
+            raw = self_cfg["retry_on"]
+            if isinstance(raw, str):
+                retry_cfg["retry_on"] = {int(s.strip()) for s in raw.split(",")}
+            elif isinstance(raw, list):
+                retry_cfg["retry_on"] = {int(s) for s in raw}
+            else:
+                retry_cfg["retry_on"] = {int(raw)}
+
         self._ctx = RestContext(
             base_url=base_url,
             content_type=content_type,
             auth=auth_cfg,
             ssl=ssl_cfg,
+            retry=retry_cfg,
         )
         self._service_name = service
 
         auth_type = auth_cfg.get("auth_type", "none")
         verify = ssl_cfg.get("verify_ssl", True)
+        retry_info = f", retry={retry_cfg['retry_count']}x" if retry_cfg.get("retry_count") else ""
         logger.info(
             f"RESTStart: Service '{service}' active "
-            f"(base_url={base_url}, auth={auth_type}, verify_ssl={verify})."
+            f"(base_url={base_url}, auth={auth_type}, verify_ssl={verify}{retry_info})."
         )
 
     @keyword("RESTStop")

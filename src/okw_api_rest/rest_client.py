@@ -74,6 +74,8 @@ def _apply_auth_header(headers: dict, auth_cfg: dict) -> None:
 
 
 def send_request(ctx: RestContext, method: str) -> None:
+    import time
+
     url = ctx.get_request_url()
     headers = ctx.get_headers()
     params = ctx.get_query_params() or None
@@ -100,8 +102,24 @@ def send_request(ctx: RestContext, method: str) -> None:
         else:
             kwargs["json"] = body
 
+    # Retry config
+    retry_count = ctx.retry.get("retry_count", 0)
+    retry_delay_ms = ctx.retry.get("retry_delay", 1000)
+    retry_on = ctx.retry.get("retry_on", set())
+
     _log_request(method, url, headers, params, body, content_type)
     response = requests.request(method, url, **kwargs)
+
+    attempt = 1
+    while response.status_code in retry_on and attempt <= retry_count:
+        logger.info(
+            f"<<< {response.status_code} — retry {attempt}/{retry_count} "
+            f"(waiting {retry_delay_ms}ms)"
+        )
+        time.sleep(retry_delay_ms / 1000.0)
+        response = requests.request(method, url, **kwargs)
+        attempt += 1
+
     ctx.store_response(response)
     _log_response(response)
 

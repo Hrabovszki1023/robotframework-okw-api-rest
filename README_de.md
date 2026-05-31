@@ -352,6 +352,29 @@ formatiertes JSON im Robot-Log. Sensible Felder (`password`, `token`,
 
 ---
 
+## Retry bei Fehler
+
+Automatische Wiederholung bei transienten HTTP-Fehlern (429, 502, 503, etc.).
+Im YAML konfiguriert — der Testcode bleibt unveraendert.
+
+```yaml
+MeineAPI:
+  __self__:
+    base_url: https://api.example.com
+    content_type: application/json
+    retry_count: 3
+    retry_delay: 1000
+    retry_on: 429,502,503
+```
+
+| Einstellung | Standard | Beschreibung |
+|---|---|---|
+| `retry_count` | 0 (aus) | Maximale Anzahl Wiederholungen |
+| `retry_delay` | 1000 | Wartezeit zwischen Versuchen in Millisekunden |
+| `retry_on` | (keine) | Status-Codes die einen Retry ausloesen |
+
+---
+
 ## Vollstaendiges Beispiel: Login + CRUD
 
 ```robot

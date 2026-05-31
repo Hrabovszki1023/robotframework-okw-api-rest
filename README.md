@@ -352,6 +352,29 @@ are masked with `***` in the request body.
 
 ---
 
+## Retry on Error
+
+Automatic retry for transient HTTP errors (429, 502, 503, etc.).
+Configured in YAML — the test code stays unchanged.
+
+```yaml
+MyAPI:
+  __self__:
+    base_url: https://api.example.com
+    content_type: application/json
+    retry_count: 3
+    retry_delay: 1000
+    retry_on: 429,502,503
+```
+
+| Setting | Default | Description |
+|---|---|---|
+| `retry_count` | 0 (off) | Maximum number of retries |
+| `retry_delay` | 1000 | Delay between retries in milliseconds |
+| `retry_on` | (none) | Status codes that trigger a retry |
+
+---
+
 ## Complete Example: Login + CRUD
 
 ```robot

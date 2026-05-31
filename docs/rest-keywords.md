@@ -140,6 +140,38 @@ __self__:
 
 Paths support `~` (home directory) and `$ENV_VAR` expansion.
 
+### Retry on error
+
+Automatic retry for transient HTTP errors. Configured in `__self__` —
+the test code is not affected.
+
+```yaml
+__self__:
+  base_url: ${BASE_URL}
+  retry_count: 3           # max retries (default: 0 = off)
+  retry_delay: 1000        # delay between retries in ms (default: 1000)
+  retry_on: 429,502,503    # status codes that trigger retry
+```
+
+When a response matches a `retry_on` status code, the request is
+automatically repeated up to `retry_count` times with `retry_delay`
+milliseconds between attempts. The log shows each retry:
+
+```
+<<< 429 — retry 1/3 (waiting 1000ms)
+<<< 429 — retry 2/3 (waiting 1000ms)
+<<< 200 OK
+    Response Body: {...}
+```
+
+If all retries fail, the last response is stored — subsequent
+`RESTVerifyStatus` will see the error status code and the test fails.
+
+**`retry_on` formats:**
+- String: `"429,502,503"` (comma-separated)
+- List: `[429, 502, 503]`
+- Single value: `429`
+
 ### User profile directory structure
 
 ```

@@ -10,11 +10,13 @@ class RestContext:
         content_type: str = "application/json",
         auth: dict | None = None,
         ssl: dict | None = None,
+        retry: dict | None = None,
     ):
         self.base_url = base_url.rstrip("/")
         self.content_type = content_type
         self.auth = auth or {}
         self.ssl = ssl or {}
+        self.retry = retry or {}
 
         self._endpoint: str | None = None
         self._body: dict = {}
