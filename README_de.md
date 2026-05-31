@@ -77,6 +77,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTSelectEndpoint` | Endpoint-Pfad waehlen |
 | `RESTSetValue` | Request-Body-Feld oder Query-Parameter setzen (Auto-Typ-Erkennung) |
 | `RESTSetValueAsString` | Request-Body-Feld setzen (immer String, keine Konvertierung) |
+| `RESTSetValueAsList` | Request-Body-Feld als JSON-Array setzen |
 | `RESTSetContext` | In verschachteltes JSON-Objekt navigieren |
 | `RESTSetHeader` | Request-Header setzen |
 | `RESTSendRequest` | HTTP-Request senden (GET, POST, PUT, PATCH, DELETE) |
@@ -85,6 +86,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTVerifyValueREGX` | Response-Feldwert pruefen (regulaerer Ausdruck) |
 | `RESTVerifyStatus` | HTTP-Statuscode pruefen |
 | `RESTVerifyResponseTime` | Response-Zeit unter Schwellwert pruefen (ms) |
+| `RESTVerifyListCount` | Anzahl Elemente in einem JSON-Array pruefen |
 | `RESTVerifyHeader` | Response-Header pruefen |
 | `RESTMemorizeValue` | Response-Feldwert speichern fuer `$MEM{name}` |
 | `RESTMemorizeBody` | Gesamten Response-Body speichern |

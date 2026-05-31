@@ -526,6 +526,35 @@ class OkwApiRestLibrary:
             )
         logger.info(f"RESTVerifyResponseTime: {actual:.0f}ms < {threshold:.0f}ms (PASS)")
 
+    @keyword("RESTVerifyListCount")
+    def rest_verify_list_count(self, field: str, expected: str):
+        """Verifies the number of elements in a JSON array field.
+
+        The field must resolve to a list in the response.
+        Context-aware (uses current RESTSetContext path).
+
+        Examples:
+        | RESTVerifyListCount | data       | 5 |
+        | RESTVerifyListCount | items      | 0 |
+        | RESTVerifyListCount | tags       | 3 |
+        """
+        if _is_ignore(expected):
+            logger.info(f"RESTVerifyListCount: {field} = $IGNORE (skipped)")
+            return
+        ctx = self._require_ctx()
+        raw = ctx.get_response_value_raw(field)
+        if not isinstance(raw, list):
+            raise AssertionError(
+                f"RESTVerifyListCount: '{field}' is not a list (got {type(raw).__name__})."
+            )
+        actual = len(raw)
+        expected_int = int(expected)
+        if actual != expected_int:
+            raise AssertionError(
+                f"RESTVerifyListCount: '{field}' has {actual} elements, expected {expected_int}."
+            )
+        logger.info(f"RESTVerifyListCount: {field} has {actual} elements (PASS)")
+
     @keyword("RESTVerifyHeader")
     def rest_verify_header(self, header: str, expected: str):
         """Verifies a response header value.

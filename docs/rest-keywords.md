@@ -13,6 +13,7 @@ Keyword-driven REST API testing for OKW4Robot.
 | `RESTSelectEndpoint` | Select endpoint path |
 | `RESTSetValue` | Set request body field (auto type: int, float, bool, null) |
 | `RESTSetValueAsString` | Set request body field (always string, no conversion) |
+| `RESTSetValueAsList` | Set request body field as JSON array |
 | `RESTSetContext` | Navigate into nested JSON object |
 | `RESTSetHeader` | Set request header |
 | `RESTSendRequest` | Send HTTP request |
@@ -21,6 +22,7 @@ Keyword-driven REST API testing for OKW4Robot.
 | `RESTVerifyValueREGX` | Verify response field value (regular expression) |
 | `RESTVerifyStatus` | Verify HTTP status code |
 | `RESTVerifyResponseTime` | Verify response time is below threshold |
+| `RESTVerifyListCount` | Verify number of elements in a JSON array |
 | `RESTVerifyHeader` | Verify response header |
 | `RESTMemorizeValue` | Store response field value |
 | `RESTMemorizeBody` | Store entire response body |
@@ -493,6 +495,81 @@ If the response time exceeds the threshold:
 ```
 RESTVerifyResponseTime: 612ms >= 500ms (too slow).
 ```
+
+---
+
+## RESTVerifyListCount
+
+Verifies the number of elements in a JSON array field.
+The field must resolve to a list in the response. Context-aware.
+
+| Parameter | Description |
+|---|---|
+| `field` | JSON field path (must be an array) |
+| `expected` | Expected number of elements |
+
+```robot
+RESTVerifyListCount    todos      3
+RESTVerifyListCount    data       5
+RESTVerifyListCount    items      0
+RESTVerifyListCount    $IGNORE    0
+```
+
+Example log output:
+
+```
+RESTVerifyListCount: todos has 3 elements (PASS)
+```
+
+If the count does not match:
+
+```
+RESTVerifyListCount: 'todos' has 5 elements, expected 3.
+```
+
+If the field is not a list:
+
+```
+RESTVerifyListCount: 'name' is not a list (got str).
+```
+
+---
+
+## RESTSetValueAsList
+
+Sets a request body field as a JSON array from variable arguments.
+All values are auto-typed. Without arguments, creates an empty array.
+
+| Parameter | Description |
+|---|---|
+| `field` | Field name (JSON key) |
+| `*values` | Zero or more values for the array |
+
+```robot
+RESTSetValueAsList    tags      wichtig    dringend    arbeit
+RESTSetValueAsList    scores    42         87          15
+RESTSetValueAsList    flags     true       false       true
+RESTSetValueAsList    items                                      
+```
+
+Results:
+- `"tags": ["wichtig", "dringend", "arbeit"]`
+- `"scores": [42, 87, 15]` (auto-typed integers)
+- `"flags": [true, false, true]` (auto-typed booleans)
+- `"items": []` (empty array, no arguments)
+
+### Alternative: Array index syntax
+
+For longer arrays or mixed-type arrays, use index syntax in
+`RESTSetValue`:
+
+```robot
+RESTSetValue    scores[0]    42
+RESTSetValue    scores[1]    87
+RESTSetValue    scores[2]    15
+```
+
+Both approaches produce the same JSON: `"scores": [42, 87, 15]`.
 
 ---
 

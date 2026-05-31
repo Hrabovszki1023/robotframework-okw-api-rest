@@ -110,6 +110,13 @@ class RestContext:
         path = f"{self._context_path}.{field_path}" if self._context_path else field_path
         return str(self._resolve_path(self._response_json, path))
 
+    def get_response_value_raw(self, field_path: str):
+        """Return the raw Python object (list, dict, etc.) without str conversion."""
+        if self._response_json is None:
+            raise RuntimeError("No JSON response available.")
+        path = f"{self._context_path}.{field_path}" if self._context_path else field_path
+        return self._resolve_path(self._response_json, path)
+
     def get_response_status(self) -> int:
         if self._status_code is None:
             raise RuntimeError("No response available. Call RESTSendRequest first.")

@@ -81,6 +81,7 @@ Todos Mit Query Parameter Abrufen
     RESTVerifyStatus       200
     RESTVerifyValue        limit           3
     RESTVerifyValue        total           254
+    RESTVerifyListCount    todos           3
 
     RESTStop
 
