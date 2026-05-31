@@ -75,7 +75,8 @@ robot tests/REST_NotesAPI.robot
 | `RESTStart` | REST-Service starten (YAML laden, Basis-URL) |
 | `RESTStop` | REST-Service stoppen |
 | `RESTSelectEndpoint` | Endpoint-Pfad waehlen |
-| `RESTSetValue` | Request-Body-Feld oder Query-Parameter (`?`-Prefix) setzen |
+| `RESTSetValue` | Request-Body-Feld oder Query-Parameter setzen (Auto-Typ-Erkennung) |
+| `RESTSetValueAsString` | Request-Body-Feld setzen (immer String, keine Konvertierung) |
 | `RESTSetContext` | In verschachteltes JSON-Objekt navigieren |
 | `RESTSetHeader` | Request-Header setzen |
 | `RESTSendRequest` | HTTP-Request senden (GET, POST, PUT, PATCH, DELETE) |
@@ -114,6 +115,30 @@ robot tests/REST_NotesAPI.robot
 |---|---|
 | `$IGNORE` | Keyword wird uebersprungen (Feld wird nicht gesendet) |
 | `$EMPTY` | Feld wird explizit auf leeren String gesetzt |
+| `$NULL` | Feld wird explizit auf JSON `null` gesetzt |
+
+---
+
+## Automatische Typ-Erkennung
+
+`RESTSetValue` konvertiert Werte automatisch in den passenden JSON-Typ:
+
+```robot
+RESTSetValue    name        Zoltan       # → String "Zoltan"
+RESTSetValue    count       42           # → Integer 42
+RESTSetValue    price       3.14         # → Float 3.14
+RESTSetValue    active      true         # → Boolean true
+RESTSetValue    comment     $NULL        # → null
+```
+
+`RESTSetValueAsString` verwenden wenn ein Wert String bleiben muss:
+
+```robot
+RESTSetValueAsString    zipcode    01234    # → String "01234" (nicht Integer)
+RESTSetValueAsString    flag       true     # → String "true" (nicht Boolean)
+```
+
+Query-Parameter (`?`-Prefix) sind immer Strings — keine Typ-Konvertierung.
 
 ---
 

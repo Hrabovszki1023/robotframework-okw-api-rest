@@ -37,13 +37,33 @@ class RestContext:
     def set_context(self, path: str):
         self._context_path = path
 
-    def set_value(self, field: str, value: str):
+    def set_value(self, field: str, value: str, force_string: bool = False):
+        typed = value if force_string else self._auto_type(value)
         if field.startswith("?"):
             self._query_params[field[1:]] = value
         elif self._context_path:
-            self._set_nested(self._body, f"{self._context_path}.{field}", value)
+            self._set_nested(self._body, f"{self._context_path}.{field}", typed)
         else:
-            self._body[field] = value
+            self._body[field] = typed
+
+    @staticmethod
+    def _auto_type(value: str):
+        """Convert string value to native JSON type where unambiguous."""
+        if value.lower() == "true":
+            return True
+        if value.lower() == "false":
+            return False
+        if value.lower() == "null" or value == "$NULL":
+            return None
+        try:
+            return int(value)
+        except ValueError:
+            pass
+        try:
+            return float(value)
+        except ValueError:
+            pass
+        return value
 
     def set_header(self, name: str, value: str):
         self._headers[name] = value

@@ -75,7 +75,8 @@ robot tests/REST_NotesAPI.robot
 | `RESTStart` | Start REST service (load YAML, base URL) |
 | `RESTStop` | Stop REST service |
 | `RESTSelectEndpoint` | Select endpoint path |
-| `RESTSetValue` | Set request body field or query parameter (`?` prefix) |
+| `RESTSetValue` | Set request body field or query parameter (auto type detection) |
+| `RESTSetValueAsString` | Set request body field (always string, no conversion) |
 | `RESTSetContext` | Navigate into nested JSON object |
 | `RESTSetHeader` | Set request header |
 | `RESTSendRequest` | Send HTTP request (GET, POST, PUT, PATCH, DELETE) |
@@ -114,6 +115,30 @@ robot tests/REST_NotesAPI.robot
 |---|---|
 | `$IGNORE` | Keyword becomes a no-op (field is not sent) |
 | `$EMPTY` | Set field explicitly to empty string |
+| `$NULL` | Set field explicitly to JSON `null` |
+
+---
+
+## Auto Type Detection
+
+`RESTSetValue` automatically converts values to their native JSON type:
+
+```robot
+RESTSetValue    name        Zoltan       # → string "Zoltan"
+RESTSetValue    count       42           # → integer 42
+RESTSetValue    price       3.14         # → float 3.14
+RESTSetValue    active      true         # → boolean true
+RESTSetValue    comment     $NULL        # → null
+```
+
+Use `RESTSetValueAsString` when a value must remain a string:
+
+```robot
+RESTSetValueAsString    zipcode    01234    # → string "01234" (not integer)
+RESTSetValueAsString    flag       true     # → string "true" (not boolean)
+```
+
+Query parameters (`?` prefix) are always strings — no type conversion.
 
 ---
 

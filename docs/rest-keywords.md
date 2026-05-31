@@ -11,7 +11,8 @@ Keyword-driven REST API testing for OKW4Robot.
 | `RESTStart` | Start REST service (load YAML, base URL) |
 | `RESTStop` | Stop REST service |
 | `RESTSelectEndpoint` | Select endpoint path |
-| `RESTSetValue` | Set request body field |
+| `RESTSetValue` | Set request body field (auto type: int, float, bool, null) |
+| `RESTSetValueAsString` | Set request body field (always string, no conversion) |
 | `RESTSetContext` | Navigate into nested JSON object |
 | `RESTSetHeader` | Set request header |
 | `RESTSendRequest` | Send HTTP request |
@@ -189,28 +190,51 @@ headers) — analogous to `SelectWindow` clearing the GUI context.
 Sets a field in the request body or a query parameter. When a context
 is active, body fields are set relative to the context path.
 
+**Auto type detection:** Body field values are automatically converted
+to their native JSON type. The tester writes only field name and value —
+the correct JSON type is determined automatically.
+
 | Parameter | Description |
 |---|---|
 | `field` | Field name (JSON key) — prefix with `?` for query parameter |
-| `value` | Field value |
+| `value` | Field value (auto-typed for body fields) |
 
-### Body fields (default)
+### Automatic type conversion (body fields)
+
+| Input value | JSON result | Rule |
+|---|---|---|
+| `Zoltan` | `"Zoltan"` | Text → string |
+| `user@test.com` | `"user@test.com"` | Text → string |
+| `42` | `42` | Integer pattern → number |
+| `3.14` | `3.14` | Float pattern → number |
+| `true` | `true` | Boolean keyword → boolean |
+| `false` | `false` | Boolean keyword → boolean |
+| `null` or `$NULL` | `null` | Null keyword → null |
+| `$EMPTY` | `""` | Empty string |
 
 ```robot
-RESTSetValue    name       Zoltan
-RESTSetValue    email      z@test.com
-RESTSetValue    password   Test1234!
+RESTSetValue    name        Zoltan       # → "name": "Zoltan"
+RESTSetValue    count       42           # → "count": 42
+RESTSetValue    price       3.14         # → "price": 3.14
+RESTSetValue    active      true         # → "active": true
+RESTSetValue    completed   false        # → "completed": false
+RESTSetValue    comment     $NULL        # → "comment": null
+RESTSetValue    email       $EMPTY       # → "email": ""
 ```
+
+Values that look like a number or boolean but must be sent as a
+**string** → use `RESTSetValueAsString` instead.
 
 ### Query parameters (`?` prefix)
 
 Fields prefixed with `?` are sent as URL query parameters instead of
-body fields. The `?` prefix is stripped before building the URL.
+body fields. Query parameters are **always strings** (no type
+conversion) — the `?` prefix is stripped before building the URL.
 
 ```robot
 RESTSetValue    ?name      Zoltan       # → ?name=Zoltan
 RESTSetValue    ?city      Berlin       # → &city=Berlin
-RESTSetValue    ?page      1            # → &page=1
+RESTSetValue    ?page      1            # → &page=1 (string in URL)
 ```
 
 Query parameters work with all HTTP methods. They are appended to
@@ -220,20 +244,23 @@ the endpoint URL as `?key=value&key=value`.
 
 ```robot
 RESTSelectEndpoint    /users/search
-RESTSetValue          ?role       admin        # query param
-RESTSetValue          ?active     true         # query param
-RESTSetValue          filter      name=Z*      # body field
+RESTSetValue          ?role       admin        # query param (string)
+RESTSetValue          ?active     true         # query param (string)
+RESTSetValue          filter      name=Z*      # body field (string)
+RESTSetValue          limit       10           # body field (integer)
 RESTSendRequest       PUT
 ```
 
-Result: `PUT /users/search?role=admin&active=true` with body `{"filter": "name=Z*"}`.
+Result: `PUT /users/search?role=admin&active=true` with body
+`{"filter": "name=Z*", "limit": 10}`.
 
 ### With active context
 
 ```robot
 RESTSetContext    customer
-RESTSetValue      name      Zoltan       # → customer.name (body)
-RESTSetValue      email     z@test.com   # → customer.email (body)
+RESTSetValue      name      Zoltan       # → customer.name (string)
+RESTSetValue      age       29           # → customer.age (integer)
+RESTSetValue      active    true         # → customer.active (boolean)
 ```
 
 Context applies only to body fields — query parameters are always
@@ -243,6 +270,36 @@ top-level and not affected by `RESTSetContext`.
 
 - `$IGNORE` — skip this keyword (no-op)
 - `$EMPTY` — set explicitly to empty string
+- `$NULL` — set explicitly to JSON `null`
+
+---
+
+## RESTSetValueAsString
+
+Sets a request body field **always as string**, without automatic type
+conversion. Use this when a value looks like a number or boolean but
+the API expects a string.
+
+| Parameter | Description |
+|---|---|
+| `field` | Field name (JSON key) |
+| `value` | Field value (always sent as string) |
+
+```robot
+RESTSetValueAsString    zipcode    01234    # → "zipcode": "01234"
+RESTSetValueAsString    flag       true     # → "flag": "true"
+RESTSetValueAsString    code       42       # → "code": "42"
+RESTSetValueAsString    version    3.0      # → "version": "3.0"
+```
+
+**When to use which:**
+
+| Situation | Keyword | Result |
+|---|---|---|
+| Normal value | `RESTSetValue count 42` | `"count": 42` (integer) |
+| Must be string | `RESTSetValueAsString count 42` | `"count": "42"` (string) |
+| Normal boolean | `RESTSetValue active true` | `"active": true` (boolean) |
+| Must be string | `RESTSetValueAsString active true` | `"active": "true"` (string) |
 
 ---
 

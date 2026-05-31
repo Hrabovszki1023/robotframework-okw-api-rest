@@ -280,16 +280,28 @@ class OkwApiRestLibrary:
 
     @keyword("RESTSetValue")
     def rest_set_value(self, field: str, value: str):
-        """Sets a request body field or query parameter.
+        """Sets a request body field or query parameter with auto type detection.
 
-        Fields prefixed with ``?`` are sent as URL query parameters.
-        Without prefix, fields are added to the request body.
-        When a context is active, body fields are set relative to the context path.
+        Values are automatically converted to native JSON types:
+        - ``true`` / ``false`` -> boolean
+        - ``null`` or ``$NULL`` -> null
+        - Integer strings (``42``) -> number
+        - Float strings (``3.14``) -> number
+        - Everything else -> string
+
+        Fields prefixed with ``?`` are sent as URL query parameters
+        (always as string, no type conversion).
+
+        Use ``RESTSetValueAsString`` to force a value as string.
 
         Examples:
-        | RESTSetValue | name     | Zoltan   |
-        | RESTSetValue | ?page    | 1        |
-        | RESTSetValue | ?active  | true     |
+        | RESTSetValue | name      | Zoltan  | # -> string "Zoltan" |
+        | RESTSetValue | count     | 42      | # -> integer 42 |
+        | RESTSetValue | price     | 3.14    | # -> float 3.14 |
+        | RESTSetValue | active    | true    | # -> boolean true |
+        | RESTSetValue | deleted   | false   | # -> boolean false |
+        | RESTSetValue | comment   | $NULL   | # -> null |
+        | RESTSetValue | ?page     | 1       | # -> query param (string) |
         """
         if _is_ignore(value):
             logger.info(f"RESTSetValue: {field} = $IGNORE (skipped)")
@@ -303,6 +315,31 @@ class OkwApiRestLibrary:
         ctx.set_value(field, value)
         log_val = "***" if "password" in field.lower() else value
         logger.info(f"RESTSetValue: {field} = {log_val}")
+
+    @keyword("RESTSetValueAsString")
+    def rest_set_value_as_string(self, field: str, value: str):
+        """Sets a request body field as string, without type conversion.
+
+        Use this when a value that looks like a number or boolean
+        must be sent as a JSON string.
+
+        Examples:
+        | RESTSetValueAsString | zipcode | 01234 | # -> string "01234" |
+        | RESTSetValueAsString | flag    | true  | # -> string "true" |
+        | RESTSetValueAsString | code    | 42    | # -> string "42" |
+        """
+        if _is_ignore(value):
+            logger.info(f"RESTSetValueAsString: {field} = $IGNORE (skipped)")
+            return
+
+        ctx = self._require_ctx()
+        value = _expand(str(value))
+        if value == _EMPTY:
+            value = ""
+
+        ctx.set_value(field, value, force_string=True)
+        log_val = "***" if "password" in field.lower() else value
+        logger.info(f"RESTSetValueAsString: {field} = '{log_val}' (string)")
 
     @keyword("RESTSetContext")
     def rest_set_context(self, path: str):
