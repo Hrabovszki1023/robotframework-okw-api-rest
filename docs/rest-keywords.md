@@ -19,6 +19,7 @@ Keyword-driven REST API testing for OKW4Robot.
 | `RESTVerifyValueWCM` | Verify response field value (wildcard: `*`, `?`) |
 | `RESTVerifyValueREGX` | Verify response field value (regular expression) |
 | `RESTVerifyStatus` | Verify HTTP status code |
+| `RESTVerifyResponseTime` | Verify response time is below threshold |
 | `RESTVerifyHeader` | Verify response header |
 | `RESTMemorizeValue` | Store response field value |
 | `RESTMemorizeBody` | Store entire response body |
@@ -320,6 +321,34 @@ RESTSendRequest    DELETE
 After sending, the response is stored internally. All subsequent
 `RESTVerify*` and `RESTMemorize*` keywords operate on this response.
 
+### Request/Response Logging
+
+`RESTSendRequest` automatically logs the request and response as
+formatted JSON in the Robot log. Sensitive fields (`password`,
+`token`, `secret`) are masked with `***` in the request body.
+
+Example log output:
+
+```
+>>> POST https://dummyjson.com/auth/login
+    Request Body:
+{
+  "username": "emilys",
+  "password": "***",
+  "expiresInMins": "30"
+}
+
+<<< 200 OK
+    Response Body:
+{
+  "accessToken": "eyJ...",
+  "username": "emilys",
+  "firstName": "Emily"
+}
+```
+
+The response body is logged unmasked for debugging purposes.
+
 ---
 
 ## RESTVerifyValue
@@ -372,6 +401,40 @@ RESTVerifyStatus    200
 RESTVerifyStatus    201
 RESTVerifyStatus    400
 RESTVerifyStatus    404
+```
+
+---
+
+## RESTVerifyResponseTime
+
+Verifies that the response time is below the given threshold.
+The actual response time must be **less than** the specified value
+in milliseconds.
+
+| Parameter | Description |
+|---|---|
+| `max_ms` | Maximum allowed response time in milliseconds |
+
+```robot
+RESTVerifyResponseTime    500
+RESTVerifyResponseTime    2000
+RESTVerifyResponseTime    $IGNORE
+```
+
+Use after `RESTSendRequest` to ensure the API responds within
+acceptable time limits. Useful for performance testing and SLA
+verification.
+
+Example log output:
+
+```
+RESTVerifyResponseTime: 341ms < 500ms (PASS)
+```
+
+If the response time exceeds the threshold:
+
+```
+RESTVerifyResponseTime: 612ms >= 500ms (too slow).
 ```
 
 ---
@@ -582,6 +645,36 @@ Benutzer Aktualisieren Mit Query Und Body
     RESTStop
 ```
 
+### Example 6: JWT Login + Bearer Auth (DummyJSON)
+
+```robot
+*** Test Cases ***
+Login Und Profil Abrufen
+    RESTStart              DummyJSON
+
+    # Login
+    RESTSelectEndpoint     /auth/login
+    RESTSetValue           username        emilys
+    RESTSetValue           password        emilyspass
+    RESTSendRequest        POST
+
+    RESTVerifyStatus       200
+    RESTVerifyResponseTime    2000
+    RESTMemorizeValue      accessToken     TOKEN
+
+    # Profil mit Bearer Token abrufen
+    RESTSelectEndpoint     /auth/me
+    RESTSetHeader          Authorization   Bearer $MEM{TOKEN}
+    RESTSendRequest        GET
+
+    RESTVerifyStatus       200
+    RESTVerifyValue        username        emilys
+    RESTVerifyValue        role            admin
+    RESTVerifyResponseTime    1000
+
+    RESTStop
+```
+
 ---
 
 ## Phase Model
@@ -596,5 +689,6 @@ Benutzer Aktualisieren Mit Query Und Body
 | Action | `RESTSendRequest` | `ClickOn` |
 | Verify | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | — |
+| Timing | `RESTVerifyResponseTime` | — |
 | Memorize | `RESTMemorizeValue` | `MemorizeValue` |
 | Stop | `RESTStop` | `StopApp` |
