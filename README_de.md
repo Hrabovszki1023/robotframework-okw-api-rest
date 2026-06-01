@@ -144,6 +144,32 @@ Query-Parameter (`?`-Prefix) sind immer Strings — keine Typ-Konvertierung.
 
 ---
 
+## JSON-Arrays
+
+Zwei Wege um Array-Felder zu setzen:
+
+```robot
+# Kurzes Array — eine Zeile
+RESTSetValueAsList     tags      wichtig    dringend    arbeit
+
+# Array-Index — ein Wert pro Zeile (Auto-Typ)
+RESTSetValue           scores[0]    42
+RESTSetValue           scores[1]    87
+RESTSetValue           scores[2]    15
+
+# Leeres Array
+RESTSetValueAsList     items
+```
+
+Array-Laenge pruefen mit `RESTVerifyListCount`:
+
+```robot
+RESTVerifyListCount    todos    3        # todos hat 3 Elemente
+RESTVerifyListCount    items    0        # items ist leer
+```
+
+---
+
 ## Query-Parameter
 
 Felder mit `?`-Prefix werden als URL-Query-Parameter gesendet:

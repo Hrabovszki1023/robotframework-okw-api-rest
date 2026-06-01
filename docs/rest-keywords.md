@@ -29,6 +29,21 @@ Keyword-driven REST API testing for OKW4Robot.
 
 ---
 
+## OKW Tokens
+
+| Token | Behavior |
+|---|---|
+| `$IGNORE` | Keyword becomes a no-op (field is not sent) |
+| `$EMPTY` | Set field explicitly to empty string |
+| `$NULL` | Set field explicitly to JSON `null` |
+
+Tokens work in `RESTSetValue`, `RESTSetValueAsString`, `RESTSetHeader`,
+`RESTVerifyValue`, `RESTVerifyValueWCM`, `RESTVerifyValueREGX`,
+`RESTVerifyStatus`, `RESTVerifyResponseTime`, `RESTVerifyListCount`,
+and `RESTVerifyHeader`.
+
+---
+
 ## RESTStart
 
 Starts the REST service. Loads the YAML configuration with base URL

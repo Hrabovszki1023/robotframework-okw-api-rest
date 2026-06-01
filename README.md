@@ -144,6 +144,32 @@ Query parameters (`?` prefix) are always strings — no type conversion.
 
 ---
 
+## JSON Arrays
+
+Two ways to set array fields:
+
+```robot
+# Short array — one line
+RESTSetValueAsList     tags      important    urgent    work
+
+# Array index — one value per line (auto-typed)
+RESTSetValue           scores[0]    42
+RESTSetValue           scores[1]    87
+RESTSetValue           scores[2]    15
+
+# Empty array
+RESTSetValueAsList     items
+```
+
+Verify array length with `RESTVerifyListCount`:
+
+```robot
+RESTVerifyListCount    todos    3        # todos has 3 elements
+RESTVerifyListCount    items    0        # items is empty
+```
+
+---
+
 ## Query Parameters
 
 Fields prefixed with `?` are sent as URL query parameters:
