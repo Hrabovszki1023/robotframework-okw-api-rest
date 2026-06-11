@@ -379,6 +379,38 @@ class OkwApiRestLibrary:
         ctx.set_value_as_list(field, expanded)
         logger.info(f"RESTSetValueAsList: {field} = [{', '.join(expanded)}]")
 
+    @keyword("RESTSetFile")
+    def rest_set_file(self, field: str, filepath: str, mime_type: str | None = None):
+        """Sets a file field for multipart form-data upload.
+
+        Can be called multiple times — files accumulate until
+        ``RESTSelectEndpoint`` resets them. When files are present,
+        ``RESTSendRequest`` automatically switches to multipart
+        encoding. Text fields set via ``RESTSetValue`` are sent as
+        form fields alongside the files.
+
+        The MIME type is auto-detected from the file extension.
+        An optional third argument overrides it.
+
+        Multiple files with the **same field name** are supported
+        (e.g. ``<input type="file" multiple>``).
+
+        Examples:
+        | RESTSetFile | avatar   | C:/img/photo.jpg |
+        | RESTSetFile | document | report.pdf       | application/pdf |
+        | RESTSetFile | attachments | file1.jpg |
+        | RESTSetFile | attachments | file2.jpg |
+        """
+        if _is_ignore(filepath):
+            logger.info(f"RESTSetFile: {field} = $IGNORE (skipped)")
+            return
+
+        ctx = self._require_ctx()
+        filepath = _expand(filepath)
+        ctx.set_file(field, filepath, mime_type)
+        filename = os.path.basename(filepath)
+        logger.info(f"RESTSetFile: {field} = '{filename}' ({mime_type or 'auto'})")
+
     @keyword("RESTSetContext")
     def rest_set_context(self, path: str):
         """Sets the context path for subsequent SetValue/VerifyValue calls.

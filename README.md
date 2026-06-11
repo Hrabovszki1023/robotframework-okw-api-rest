@@ -78,6 +78,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTSetValue` | Set request body field or query parameter (auto type detection) |
 | `RESTSetValueAsString` | Set request body field (always string, no conversion) |
 | `RESTSetValueAsList` | Set request body field as JSON array |
+| `RESTSetFile` | Set file field for multipart form-data upload |
 | `RESTSetContext` | Navigate into nested JSON object |
 | `RESTSetHeader` | Set request header |
 | `RESTSendRequest` | Send HTTP request (GET, POST, PUT, PATCH, DELETE) |
@@ -102,6 +103,7 @@ robot tests/REST_NotesAPI.robot
 | Input | `RESTSetValue` | `SetValue` |
 | Context | `RESTSetContext` | `SetContext` |
 | Header | `RESTSetHeader` | -- |
+| File | `RESTSetFile` | -- |
 | Action | `RESTSendRequest` | `ClickOn` |
 | Verify | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | -- |
@@ -167,6 +169,34 @@ Verify array length with `RESTVerifyListCount`:
 RESTVerifyListCount    todos    3        # todos has 3 elements
 RESTVerifyListCount    items    0        # items is empty
 ```
+
+---
+
+## File Upload
+
+Upload files via multipart form-data:
+
+```robot
+RESTSelectEndpoint     /api/documents
+RESTSetValue           title       Annual Report
+RESTSetFile            file        ${CURDIR}/testdata/report.pdf
+RESTSendRequest        POST
+RESTVerifyStatus       200
+```
+
+When files are present, `RESTSendRequest` automatically switches to
+multipart encoding. Text fields are sent as form fields alongside.
+
+```robot
+# Multiple files, same field name
+RESTSetFile    attachments    photo1.jpg
+RESTSetFile    attachments    photo2.jpg
+
+# Explicit MIME type
+RESTSetFile    data    export.bin    application/octet-stream
+```
+
+MIME type is auto-detected from file extension. Paths support `~` and `$ENV_VAR`.
 
 ---
 

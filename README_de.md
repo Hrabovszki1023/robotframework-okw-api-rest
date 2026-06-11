@@ -78,6 +78,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTSetValue` | Request-Body-Feld oder Query-Parameter setzen (Auto-Typ-Erkennung) |
 | `RESTSetValueAsString` | Request-Body-Feld setzen (immer String, keine Konvertierung) |
 | `RESTSetValueAsList` | Request-Body-Feld als JSON-Array setzen |
+| `RESTSetFile` | Datei-Feld fuer Multipart-Upload setzen |
 | `RESTSetContext` | In verschachteltes JSON-Objekt navigieren |
 | `RESTSetHeader` | Request-Header setzen |
 | `RESTSendRequest` | HTTP-Request senden (GET, POST, PUT, PATCH, DELETE) |
@@ -102,6 +103,7 @@ robot tests/REST_NotesAPI.robot
 | Eingabe | `RESTSetValue` | `SetValue` |
 | Kontext | `RESTSetContext` | `SetContext` |
 | Header | `RESTSetHeader` | -- |
+| Datei | `RESTSetFile` | -- |
 | Aktion | `RESTSendRequest` | `ClickOn` |
 | Pruefen | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | -- |
@@ -167,6 +169,34 @@ Array-Laenge pruefen mit `RESTVerifyListCount`:
 RESTVerifyListCount    todos    3        # todos hat 3 Elemente
 RESTVerifyListCount    items    0        # items ist leer
 ```
+
+---
+
+## Datei-Upload
+
+Dateien via Multipart Form-Data hochladen:
+
+```robot
+RESTSelectEndpoint     /api/documents
+RESTSetValue           title       Jahresbericht
+RESTSetFile            file        ${CURDIR}/testdata/report.pdf
+RESTSendRequest        POST
+RESTVerifyStatus       200
+```
+
+Wenn Dateien vorhanden sind, wechselt `RESTSendRequest` automatisch
+auf Multipart-Encoding. Textfelder werden als Formularfelder mitgesendet.
+
+```robot
+# Mehrere Dateien, gleicher Feldname
+RESTSetFile    attachments    foto1.jpg
+RESTSetFile    attachments    foto2.jpg
+
+# Expliziter MIME-Type
+RESTSetFile    data    export.bin    application/octet-stream
+```
+
+Der MIME-Type wird automatisch aus der Dateiendung erkannt. Pfade unterstuetzen `~` und `$ENV_VAR`.
 
 ---
 

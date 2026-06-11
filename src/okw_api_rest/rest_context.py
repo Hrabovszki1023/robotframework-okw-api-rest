@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import mimetypes
+import os
+
 
 class RestContext:
     """Holds the mutable state for one REST service session."""
@@ -24,6 +27,8 @@ class RestContext:
         self._headers: dict = {}
         self._context_path: str | None = None
 
+        self._files: list[tuple[str, tuple[str, bytes, str]]] = []
+
         self._response = None
         self._response_json: dict | None = None
         self._response_headers: dict = {}
@@ -34,6 +39,7 @@ class RestContext:
         self._body = {}
         self._query_params = {}
         self._headers = {}
+        self._files = []
         self._context_path = None
 
     def set_context(self, path: str):
@@ -76,6 +82,24 @@ class RestContext:
         except ValueError:
             pass
         return value
+
+    def set_file(self, field: str, filepath: str, mime_type: str | None = None):
+        """Add a file to the request (multipart form-data)."""
+        filepath = os.path.expanduser(os.path.expandvars(filepath))
+        if not os.path.isfile(filepath):
+            raise FileNotFoundError(f"File not found: {filepath}")
+        filename = os.path.basename(filepath)
+        if mime_type is None:
+            mime_type = mimetypes.guess_type(filepath)[0] or "application/octet-stream"
+        with open(filepath, "rb") as f:
+            data = f.read()
+        self._files.append((field, (filename, data, mime_type)))
+
+    def get_files(self) -> list[tuple[str, tuple[str, bytes, str]]]:
+        return self._files
+
+    def has_files(self) -> bool:
+        return len(self._files) > 0
 
     def set_header(self, name: str, value: str):
         self._headers[name] = value

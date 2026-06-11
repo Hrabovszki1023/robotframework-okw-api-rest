@@ -96,7 +96,11 @@ def send_request(ctx: RestContext, method: str) -> None:
     kwargs: dict = {"headers": headers, "params": params, "auth": auth}
     kwargs.update(ssl_kwargs)
 
-    if method in ("POST", "PUT", "PATCH") and body:
+    if method in ("POST", "PUT", "PATCH") and ctx.has_files():
+        headers.pop("Content-Type", None)
+        kwargs["data"] = body or None
+        kwargs["files"] = ctx.get_files()
+    elif method in ("POST", "PUT", "PATCH") and body:
         if "application/x-www-form-urlencoded" in content_type:
             kwargs["data"] = body
         else:
@@ -107,7 +111,8 @@ def send_request(ctx: RestContext, method: str) -> None:
     retry_delay_ms = ctx.retry.get("retry_delay", 1000)
     retry_on = ctx.retry.get("retry_on", set())
 
-    _log_request(method, url, headers, params, body, content_type)
+    _log_request(method, url, headers, params, body, content_type,
+                 files=ctx.get_files() if ctx.has_files() else None)
     response = requests.request(method, url, **kwargs)
 
     attempt = 1
@@ -139,12 +144,16 @@ def _mask_sensitive(obj, _depth=0):
     return masked
 
 
-def _log_request(method, url, headers, params, body, content_type):
+def _log_request(method, url, headers, params, body, content_type, files=None):
     """Log request details as formatted JSON to Robot log."""
     parts = [f">>> {method} {url}"]
 
     if params:
         parts.append(f"    Query: {json.dumps(params, ensure_ascii=False)}")
+
+    if files:
+        file_info = [f"{name}: {fname} ({mime})" for name, (fname, _, mime) in files]
+        parts.append(f"    Files: {', '.join(file_info)}")
 
     if body:
         safe_body = _mask_sensitive(body) if isinstance(body, dict) else body

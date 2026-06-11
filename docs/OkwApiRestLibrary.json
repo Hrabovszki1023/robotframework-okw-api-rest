@@ -3,7 +3,7 @@
   "name": "okw_api_rest.library.OkwApiRestLibrary",
   "doc": "<p>OKW keyword-driven REST API testing library.</p>\n<p>Provides keywords for building, sending, and verifying REST API requests following the OKW phase model: Start -&gt; Scope -&gt; Input -&gt; Action -&gt; Verify -&gt; Stop.</p>\n<h2 id=\"Import\">Import</h2>\n<pre>\nLibrary    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI\n</pre>\n<h2 id=\"YAML Configuration\">YAML Configuration</h2>\n<pre>\nNotesAPI:\n  __self__:\n    class: okw_api_rest.library.OkwApiRestLibrary\n    base_url: <a href=\"https://practice.expandtesting.com/notes/api\">https://practice.expandtesting.com/notes/api</a>\n    content_type: application/x-www-form-urlencoded\n</pre>\n<h2 id=\"Example\">Example</h2>\n<pre>\nRESTStart              NotesAPI\nRESTSelectEndpoint     /users/login\nRESTSetValue           email        user@example.com\nRESTSetValue           password     Secret123!\nRESTSendRequest        POST\nRESTVerifyStatus       200\nRESTMemorizeValue      data.token   TOKEN\nRESTStop\n</pre>",
   "version": "0.1.0",
-  "generated": "2026-06-01T05:43:47+00:00",
+  "generated": "2026-06-11T15:45:55+00:00",
   "type": "LIBRARY",
   "scope": "GLOBAL",
   "docFormat": "HTML",
@@ -34,7 +34,7 @@
       "shortdoc": "Stores the entire response body as a string.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 610
+      "lineno": 642
     },
     {
       "name": "RESTMemorizeValue",
@@ -71,7 +71,7 @@
       "shortdoc": "Stores a response field value under a symbolic name.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 595
+      "lineno": 627
     },
     {
       "name": "RESTSelectEndpoint",
@@ -119,7 +119,7 @@
       "shortdoc": "Sends the prepared HTTP request.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 422
+      "lineno": 454
     },
     {
       "name": "RESTSetContext",
@@ -141,6 +141,69 @@
       "returnType": null,
       "doc": "<p>Sets the context path for subsequent SetValue/VerifyValue calls.</p>\n<p>Fields are resolved relative to the context path. Each call replaces the previous context (flat, no stack).</p>\n<p>Examples:</p>\n<table border=\"1\">\n<tr>\n<td>RESTSetContext</td>\n<td>customer</td>\n</tr>\n<tr>\n<td>RESTSetContext</td>\n<td>customer.address</td>\n</tr>\n<tr>\n<td>RESTSetContext</td>\n<td>items[0]</td>\n</tr>\n</table>",
       "shortdoc": "Sets the context path for subsequent SetValue/VerifyValue calls.",
+      "tags": [],
+      "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
+      "lineno": 415
+    },
+    {
+      "name": "RESTSetFile",
+      "args": [
+        {
+          "name": "field",
+          "type": {
+            "name": "str",
+            "typedoc": "string",
+            "nested": [],
+            "union": false
+          },
+          "defaultValue": null,
+          "kind": "POSITIONAL_OR_NAMED",
+          "required": true,
+          "repr": "field: str"
+        },
+        {
+          "name": "filepath",
+          "type": {
+            "name": "str",
+            "typedoc": "string",
+            "nested": [],
+            "union": false
+          },
+          "defaultValue": null,
+          "kind": "POSITIONAL_OR_NAMED",
+          "required": true,
+          "repr": "filepath: str"
+        },
+        {
+          "name": "mime_type",
+          "type": {
+            "name": "Union",
+            "typedoc": null,
+            "nested": [
+              {
+                "name": "str",
+                "typedoc": "string",
+                "nested": [],
+                "union": false
+              },
+              {
+                "name": "None",
+                "typedoc": "None",
+                "nested": [],
+                "union": false
+              }
+            ],
+            "union": true
+          },
+          "defaultValue": "None",
+          "kind": "POSITIONAL_OR_NAMED",
+          "required": false,
+          "repr": "mime_type: str | None = None"
+        }
+      ],
+      "returnType": null,
+      "doc": "<p>Sets a file field for multipart form-data upload.</p>\n<p>Can be called multiple times \u2014 files accumulate until <code>RESTSelectEndpoint</code> resets them. When files are present, <code>RESTSendRequest</code> automatically switches to multipart encoding. Text fields set via <code>RESTSetValue</code> are sent as form fields alongside the files.</p>\n<p>The MIME type is auto-detected from the file extension. An optional third argument overrides it.</p>\n<p>Multiple files with the <b>*same field name*</b> are supported (e.g. <code>&lt;input type=\"file\" multiple&gt;</code>).</p>\n<p>Examples:</p>\n<table border=\"1\">\n<tr>\n<td>RESTSetFile</td>\n<td>avatar</td>\n<td>C:/img/photo.jpg</td>\n<td></td>\n</tr>\n<tr>\n<td>RESTSetFile</td>\n<td>document</td>\n<td>report.pdf</td>\n<td>application/pdf</td>\n</tr>\n<tr>\n<td>RESTSetFile</td>\n<td>attachments</td>\n<td>file1.jpg</td>\n<td></td>\n</tr>\n<tr>\n<td>RESTSetFile</td>\n<td>attachments</td>\n<td>file2.jpg</td>\n<td></td>\n</tr>\n</table>",
+      "shortdoc": "Sets a file field for multipart form-data upload.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
       "lineno": 383
@@ -180,7 +243,7 @@
       "shortdoc": "Sets a request header for the next request.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 400
+      "lineno": 432
     },
     {
       "name": "RESTSetValue",
@@ -388,7 +451,7 @@
       "shortdoc": "Verifies a response header value.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 576
+      "lineno": 608
     },
     {
       "name": "RESTVerifyListCount",
@@ -425,7 +488,7 @@
       "shortdoc": "Verifies the number of elements in a JSON array field.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 547
+      "lineno": 579
     },
     {
       "name": "RESTVerifyResponseTime",
@@ -449,7 +512,7 @@
       "shortdoc": "Verifies that the response time is below the given threshold.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 524
+      "lineno": 556
     },
     {
       "name": "RESTVerifyStatus",
@@ -473,7 +536,7 @@
       "shortdoc": "Verifies the HTTP status code of the response.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 503
+      "lineno": 535
     },
     {
       "name": "RESTVerifyValue",
@@ -510,7 +573,7 @@
       "shortdoc": "Verifies a response field value (exact match).",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 447
+      "lineno": 479
     },
     {
       "name": "RESTVerifyValueREGX",
@@ -547,7 +610,7 @@
       "shortdoc": "Verifies a response field value (regular expression match).",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 486
+      "lineno": 518
     },
     {
       "name": "RESTVerifyValueWCM",
@@ -584,7 +647,7 @@
       "shortdoc": "Verifies a response field value (wildcard match: ``*``, ``?``).",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 469
+      "lineno": 501
     }
   ],
   "typedocs": [
@@ -593,6 +656,7 @@
       "name": "None",
       "doc": "<p>String <code>NONE</code> (case-insensitive) and the empty string are converted to the Python <code>None</code> object. Other values cause an error.</p>\n<p>Converting the empty string is new in Robot Framework 7.4.</p>",
       "usages": [
+        "RESTSetFile",
         "RESTStart"
       ],
       "accepts": [
@@ -609,6 +673,7 @@
         "RESTSelectEndpoint",
         "RESTSendRequest",
         "RESTSetContext",
+        "RESTSetFile",
         "RESTSetHeader",
         "RESTSetValue",
         "RESTSetValueAsList",

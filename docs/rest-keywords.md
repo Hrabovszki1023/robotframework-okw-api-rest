@@ -14,6 +14,7 @@ Keyword-driven REST API testing for OKW4Robot.
 | `RESTSetValue` | Set request body field (auto type: int, float, bool, null) |
 | `RESTSetValueAsString` | Set request body field (always string, no conversion) |
 | `RESTSetValueAsList` | Set request body field as JSON array |
+| `RESTSetFile` | Set file field for multipart form-data upload |
 | `RESTSetContext` | Navigate into nested JSON object |
 | `RESTSetHeader` | Set request header |
 | `RESTSendRequest` | Send HTTP request |
@@ -37,7 +38,7 @@ Keyword-driven REST API testing for OKW4Robot.
 | `$EMPTY` | Set field explicitly to empty string |
 | `$NULL` | Set field explicitly to JSON `null` |
 
-Tokens work in `RESTSetValue`, `RESTSetValueAsString`, `RESTSetHeader`,
+Tokens work in `RESTSetValue`, `RESTSetValueAsString`, `RESTSetFile`, `RESTSetHeader`,
 `RESTVerifyValue`, `RESTVerifyValueWCM`, `RESTVerifyValueREGX`,
 `RESTVerifyStatus`, `RESTVerifyResponseTime`, `RESTVerifyListCount`,
 and `RESTVerifyHeader`.
@@ -620,6 +621,85 @@ Both approaches produce the same JSON: `"scores": [42, 87, 15]`.
 
 ---
 
+## RESTSetFile
+
+Sets a file field for multipart form-data upload. When files are
+present, `RESTSendRequest` automatically switches from JSON to
+multipart encoding. Text fields set via `RESTSetValue` are sent as
+form fields alongside the files.
+
+| Parameter | Description |
+|---|---|
+| `field` | Form field name (e.g. `file`, `avatar`, `attachments`) |
+| `filepath` | Path to the file to upload |
+| `mime_type` | (optional) MIME type override (auto-detected from extension) |
+
+```robot
+RESTSetFile    avatar     C:/img/photo.jpg
+RESTSetFile    document   report.pdf                   application/pdf
+```
+
+### Multiple files
+
+Call `RESTSetFile` multiple times — files accumulate until
+`RESTSelectEndpoint` resets them.
+
+```robot
+RESTSetFile    attachments    file1.jpg
+RESTSetFile    attachments    file2.jpg
+```
+
+Multiple files with the **same field name** are supported (like
+`<input type="file" multiple>`) — internally stored as a list of
+tuples, not a dict.
+
+### Mixed: files + text fields
+
+```robot
+RESTSelectEndpoint    /api/documents
+RESTSetValue          title       Annual Report
+RESTSetValue          category    Finance
+RESTSetFile           file        report.pdf
+RESTSendRequest       POST
+```
+
+Text fields from `RESTSetValue` are sent as `data=` form fields.
+The `Content-Type` header is **not set manually** — `requests`
+generates `multipart/form-data` with the correct boundary.
+
+### MIME type detection
+
+The MIME type is auto-detected from the file extension using Python's
+`mimetypes.guess_type()`. An optional third argument overrides it:
+
+| Extension | Auto-detected MIME type |
+|---|---|
+| `.jpg`, `.jpeg` | `image/jpeg` |
+| `.png` | `image/png` |
+| `.pdf` | `application/pdf` |
+| `.txt` | `text/plain` |
+| `.csv` | `text/csv` |
+| `.json` | `application/json` |
+| unknown | `application/octet-stream` |
+
+### File paths
+
+- Absolute and relative paths are supported
+- `~` expands to the user's home directory
+- `$ENV_VAR` and `${CURDIR}` (Robot variable) are expanded
+- Missing files raise `FileNotFoundError` before sending the request
+
+### Log output
+
+```
+>>> POST https://api.example.com/upload
+    Files: file: report.pdf (application/pdf)
+    Request Body:
+{"title": "Annual Report", "category": "Finance"}
+```
+
+---
+
 ## RESTVerifyHeader
 
 Verifies a response header value.
@@ -856,6 +936,25 @@ Login Und Profil Abrufen
     RESTStop
 ```
 
+### Example 7: File Upload
+
+```robot
+*** Test Cases ***
+Dokument Hochladen
+    RESTStart              MyAPI
+
+    RESTSelectEndpoint     /api/documents
+    RESTSetValue           title       Jahresbericht
+    RESTSetValue           category    Finance
+    RESTSetFile            file        ${CURDIR}/testdata/report.pdf
+    RESTSendRequest        POST
+
+    RESTVerifyStatus       200
+    RESTVerifyValue        data.filename    report.pdf
+
+    RESTStop
+```
+
 ---
 
 ## Phase Model
@@ -867,6 +966,7 @@ Login Und Profil Abrufen
 | Input | `RESTSetValue` | `SetValue` |
 | Context | `RESTSetContext` | `SetContext` |
 | Header | `RESTSetHeader` | — |
+| File | `RESTSetFile` | — |
 | Action | `RESTSendRequest` | `ClickOn` |
 | Verify | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | — |

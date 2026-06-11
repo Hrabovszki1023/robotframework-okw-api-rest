@@ -22,7 +22,7 @@
 | 7 | Erledigt | Array-Laenge pruefen | `RESTVerifyListCount field count` |
 | 8 | Erledigt | Retry bei Fehler | YAML-Config: `retry_count`, `retry_delay`, `retry_on` |
 | 9 | Klaerung | Cookie-Handling | Cookie-Jar ueber Requests hinweg (Session-APIs wie AQUA). Manche APIs senden Session nur als `Set-Cookie` Header, nicht im JSON-Body. Optionen: (A) `RESTMemorizeHeader`, (B) automatischer Cookie-Jar via `requests.Session` |
-| 10 | Offen | File Upload | Multipart Form-Data fuer Datei-Uploads |
+| 10 | Erledigt | File Upload | `RESTSetFile` — Multipart Form-Data, Auto-MIME, Mehrfach-Upload |
 | 11 | Offen | OAuth 2.0 Flow | Auth-Type in YAML |
 
 ---

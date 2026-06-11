@@ -1,0 +1,5 @@
+Httpbin:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: https://httpbin.org
+    content_type: application/json
