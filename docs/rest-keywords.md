@@ -693,9 +693,17 @@ The MIME type is auto-detected from the file extension using Python's
 
 ```
 >>> POST https://api.example.com/upload
-    Files: file: report.pdf (application/pdf)
+    File: file: report.pdf (application/pdf, 1.2 MB)
+          Content: (binary, first 20 bytes: 25 50 44 46 2d 31 2e 34 ...)
     Request Body:
 {"title": "Annual Report", "category": "Finance"}
+```
+
+Text files show readable content:
+
+```
+    File: data: notes.txt (text/plain, 45 B)
+          Content: 'Hello World\nSecond line\n'
 ```
 
 ---

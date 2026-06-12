@@ -197,6 +197,7 @@ RESTSetFile    data    export.bin    application/octet-stream
 ```
 
 Der MIME-Type wird automatisch aus der Dateiendung erkannt. Pfade unterstuetzen `~` und `$ENV_VAR`.
+Dateiinhalt wird im Robot-Log angezeigt (Text lesbar, Binaer als Hex).
 
 ---
 

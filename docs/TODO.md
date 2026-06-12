@@ -44,9 +44,9 @@
 
 | # | Umsetzung | Feature | Details |
 |---|---|---|---|
-| 18 | Erledigt | REST-Keywords.md | Alle 18 Keywords + Token-Tabelle + Retry + Arrays |
+| 18 | Erledigt | REST-Keywords.md | Alle 19 Keywords + Token-Tabelle + Retry + Arrays + File Upload |
 | 19 | Erledigt | README (EN/DE) | Alle Abschnitte aktuell |
-| 20 | Erledigt | Libdoc regenerieren | HTML + JSON mit allen 18 Keywords |
+| 20 | Erledigt | Libdoc regenerieren | HTML + JSON mit allen 19 Keywords |
 | 21 | Erledigt | AI-Prompt aktualisieren | Typ-Erkennung, Arrays, Retry, ListCount |
 | 22 | Erledigt | Capture-Workflow Doku | docs/capture-workflow.md, lokal, nicht committed |
 | 23 | Erledigt | Contract-Pruefung | Alle Dateien konsistent: Keywords, Tokens, Phasenmodell |

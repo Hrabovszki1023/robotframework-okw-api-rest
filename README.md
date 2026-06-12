@@ -197,6 +197,7 @@ RESTSetFile    data    export.bin    application/octet-stream
 ```
 
 MIME type is auto-detected from file extension. Paths support `~` and `$ENV_VAR`.
+File content is previewed in the Robot log (text readable, binary as hex).
 
 ---
 
