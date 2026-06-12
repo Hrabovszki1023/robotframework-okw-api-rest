@@ -23,7 +23,7 @@
 | 8 | Erledigt | Retry bei Fehler | YAML-Config: `retry_count`, `retry_delay`, `retry_on` |
 | 9 | Klaerung | Cookie-Handling | Cookie-Jar ueber Requests hinweg (Session-APIs wie AQUA). Manche APIs senden Session nur als `Set-Cookie` Header, nicht im JSON-Body. Optionen: (A) `RESTMemorizeHeader`, (B) automatischer Cookie-Jar via `requests.Session` |
 | 10 | Erledigt | File Upload | `RESTSetFile` — Multipart Form-Data, Auto-MIME, Mehrfach-Upload |
-| 11 | Offen | OAuth 2.0 Flow | Auth-Type in YAML |
+| 11 | Erledigt | OAuth 2.0 Flow | `oauth2_client_credentials` in YAML — Token wird automatisch bei RESTStart geholt |
 
 ---
 

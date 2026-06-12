@@ -343,6 +343,18 @@ auth_type: bearer
 auth_token: ${AUTH_TOKEN}
 ```
 
+**OAuth 2.0 Client Credentials** (Maschine-zu-Maschine):
+
+```yaml
+auth_type: oauth2_client_credentials
+token_url: https://auth.example.com/oauth/token
+client_id: ${CLIENT_ID}
+client_secret: ${CLIENT_SECRET}
+scope: read write
+```
+
+`RESTStart` holt den Token automatisch — der Testcode merkt nichts von OAuth.
+
 Fuer dynamische Token (Login-Flow) `RESTMemorizeValue` + `RESTSetHeader` verwenden.
 
 ---

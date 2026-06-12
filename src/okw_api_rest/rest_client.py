@@ -57,8 +57,46 @@ def _build_ssl_kwargs(ssl_cfg: dict) -> dict:
     return kwargs
 
 
+def _fetch_oauth2_token(auth_cfg: dict, ssl_kwargs: dict) -> str:
+    """Fetch an OAuth 2.0 access token using Client Credentials flow."""
+    token_url = auth_cfg.get("token_url")
+    if not token_url:
+        raise ValueError("OAuth 2.0 requires 'token_url' in YAML __self__.")
+
+    client_id = auth_cfg.get("client_id", "")
+    client_secret = auth_cfg.get("client_secret", "")
+    scope = auth_cfg.get("scope", "")
+
+    payload = {"grant_type": "client_credentials"}
+    if scope:
+        payload["scope"] = scope
+
+    logger.info(f"OAuth 2.0: Requesting token from {token_url}")
+    response = requests.post(
+        token_url,
+        data=payload,
+        auth=HTTPBasicAuth(client_id, client_secret),
+        **ssl_kwargs,
+    )
+
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"OAuth 2.0 token request failed: {response.status_code} {response.reason}\n"
+            f"{response.text}"
+        )
+
+    token_data = response.json()
+    access_token = token_data.get("access_token")
+    if not access_token:
+        raise RuntimeError(f"OAuth 2.0 response has no access_token: {token_data}")
+
+    expires_in = token_data.get("expires_in", "?")
+    logger.info(f"OAuth 2.0: Token received (expires_in={expires_in}s)")
+    return access_token
+
+
 def _apply_auth_header(headers: dict, auth_cfg: dict) -> None:
-    """Apply header-based auth (api_key, bearer) to request headers."""
+    """Apply header-based auth (api_key, bearer, oauth2) to request headers."""
     auth_type = auth_cfg.get("auth_type", "none").lower()
 
     if auth_type == "api_key":
@@ -69,6 +107,11 @@ def _apply_auth_header(headers: dict, auth_cfg: dict) -> None:
 
     elif auth_type == "bearer":
         token = auth_cfg.get("auth_token", "")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+
+    elif auth_type == "oauth2_client_credentials":
+        token = auth_cfg.get("_oauth2_token", "")
         if token:
             headers["Authorization"] = f"Bearer {token}"
 

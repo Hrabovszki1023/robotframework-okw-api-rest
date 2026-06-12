@@ -139,6 +139,68 @@ __self__:
   auth_token: ${AUTH_TOKEN}
 ```
 
+**OAuth 2.0 Client Credentials:**
+
+For machine-to-machine API access. `RESTStart` automatically fetches
+an access token from the token server and sets
+`Authorization: Bearer <token>` on every request.
+
+```yaml
+# locators/MeineAPI.yaml — safe for repo (only placeholders)
+MeineAPI:
+  __self__:
+    base_url: https://api.example.com
+    auth_type: oauth2_client_credentials
+    token_url: https://auth.example.com/oauth/token
+    client_id: ${CLIENT_ID}
+    client_secret: ${CLIENT_SECRET}
+    scope: read write
+```
+
+```yaml
+# ~/.okw/env/env-test.yaml — NOT in repo
+CLIENT_ID: my-service-account
+CLIENT_SECRET: geheim123
+```
+
+| Setting | Required | Description |
+|---|---|---|
+| `auth_type` | yes | Must be `oauth2_client_credentials` |
+| `token_url` | yes | Full URL of the OAuth token endpoint |
+| `client_id` | yes | Client ID (from API provider) |
+| `client_secret` | yes | Client Secret (from API provider) |
+| `scope` | no | Space-separated scopes (default: none) |
+
+**How the connection works** (YAML ↔ env file ↔ test):
+
+```
+locators/MeineAPI.yaml          ~/.okw/env/env-test.yaml
+  client_id: ${CLIENT_ID}   →     CLIENT_ID: my-service-account
+  client_secret: ${CLIENT_SECRET} → CLIENT_SECRET: geheim123
+
+Test file:
+  RESTStart    MeineAPI    env-test
+               ↑            ↑
+               │            └── loads env file, resolves ${...} placeholders
+               └── loads YAML config
+```
+
+1. `RESTStart MeineAPI env-test` loads the service YAML
+2. Loads `~/.okw/env/env-test.yaml` and replaces all `${VAR}` placeholders
+3. Detects `auth_type: oauth2_client_credentials`
+4. Sends `POST token_url` with `grant_type=client_credentials` + credentials
+5. Stores the returned `access_token` — added to every request automatically
+
+The test code sees nothing of this:
+
+```robot
+RESTStart              MeineAPI    env-test
+RESTSelectEndpoint     /api/data
+RESTSendRequest        GET
+RESTVerifyStatus       200
+RESTStop
+```
+
 Note: For dynamic tokens (login → token → use), use
 `RESTMemorizeValue` + `RESTSetHeader` in the test — that is test
 logic, not infrastructure.

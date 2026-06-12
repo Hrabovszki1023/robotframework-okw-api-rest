@@ -10,7 +10,7 @@ from robot.api.deco import keyword, library
 from okw_contract_utils import MatchMode, assert_match, expand_mem
 
 from .rest_context import RestContext
-from .rest_client import send_request
+from .rest_client import send_request, _fetch_oauth2_token, _build_ssl_kwargs
 
 
 _IGNORE = "$IGNORE"
@@ -224,7 +224,8 @@ class OkwApiRestLibrary:
 
         # Authentication config
         auth_keys = {"auth_type", "auth_user", "auth_password",
-                     "auth_header", "auth_key", "auth_token"}
+                     "auth_header", "auth_key", "auth_token",
+                     "token_url", "client_id", "client_secret", "scope"}
         auth_cfg = {k: v for k, v in self_cfg.items() if k in auth_keys}
 
         # SSL config
@@ -246,6 +247,13 @@ class OkwApiRestLibrary:
             else:
                 retry_cfg["retry_on"] = {int(raw)}
 
+        # OAuth 2.0: fetch token before creating context
+        auth_type = auth_cfg.get("auth_type", "none").lower()
+        if auth_type == "oauth2_client_credentials":
+            ssl_kwargs = _build_ssl_kwargs(ssl_cfg)
+            token = _fetch_oauth2_token(auth_cfg, ssl_kwargs)
+            auth_cfg["_oauth2_token"] = token
+
         self._ctx = RestContext(
             base_url=base_url,
             content_type=content_type,
@@ -254,8 +262,6 @@ class OkwApiRestLibrary:
             retry=retry_cfg,
         )
         self._service_name = service
-
-        auth_type = auth_cfg.get("auth_type", "none")
         verify = ssl_cfg.get("verify_ssl", True)
         retry_info = f", retry={retry_cfg['retry_count']}x" if retry_cfg.get("retry_count") else ""
         logger.info(

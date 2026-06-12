@@ -1,0 +1,10 @@
+OAuth2Test:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: https://httpbin.org
+    content_type: application/json
+    auth_type: oauth2_client_credentials
+    token_url: https://httpbin.org/status/503
+    client_id: test-client-id
+    client_secret: test-client-secret
+    scope: read

@@ -1,0 +1,10 @@
+OAuth2Demo:
+  __self__:
+    class: okw_api_rest.library.OkwApiRestLibrary
+    base_url: https://demo.duendesoftware.com
+    content_type: application/json
+    auth_type: oauth2_client_credentials
+    token_url: https://demo.duendesoftware.com/connect/token
+    client_id: m2m
+    client_secret: secret
+    scope: api
