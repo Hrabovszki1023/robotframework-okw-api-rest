@@ -129,6 +129,37 @@ def send_request(ctx: RestContext, method: str) -> None:
     _log_response(response)
 
 
+def _format_size(n: int) -> str:
+    if n < 1024:
+        return f"{n} B"
+    if n < 1024 * 1024:
+        return f"{n / 1024:.1f} KB"
+    return f"{n / (1024 * 1024):.1f} MB"
+
+
+def _is_text_mime(mime: str) -> bool:
+    return mime.startswith("text/") or mime in (
+        "application/json", "application/xml", "application/javascript",
+    )
+
+
+def _file_preview(data: bytes, mime: str, n: int = 80) -> str:
+    """Human-readable file content preview like browser DevTools."""
+    if _is_text_mime(mime):
+        try:
+            text = data.decode("utf-8")
+        except UnicodeDecodeError:
+            text = data.decode("latin-1")
+        text = text.replace("\r\n", "\n").replace("\r", "\n")
+        if len(text) <= n:
+            preview = repr(text)
+        else:
+            preview = repr(text[:n // 2]) + " ... " + repr(text[-(n // 2):])
+        return f"Content: {preview}"
+    head = data[:20]
+    return f"Content: (binary, first 20 bytes: {head.hex(' ')})"
+
+
 def _mask_sensitive(obj, _depth=0):
     """Mask password fields in a dict for safe logging."""
     if not isinstance(obj, dict) or _depth > 10:
@@ -152,8 +183,11 @@ def _log_request(method, url, headers, params, body, content_type, files=None):
         parts.append(f"    Query: {json.dumps(params, ensure_ascii=False)}")
 
     if files:
-        file_info = [f"{name}: {fname} ({mime})" for name, (fname, _, mime) in files]
-        parts.append(f"    Files: {', '.join(file_info)}")
+        for name, (fname, data, mime) in files:
+            size = _format_size(len(data))
+            preview = _file_preview(data, mime)
+            parts.append(f"    File: {name}: {fname} ({mime}, {size})")
+            parts.append(f"          {preview}")
 
     if body:
         safe_body = _mask_sensitive(body) if isinstance(body, dict) else body
