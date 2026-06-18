@@ -3,7 +3,7 @@
   "name": "okw_api_rest.library.OkwApiRestLibrary",
   "doc": "<p>OKW keyword-driven REST API testing library.</p>\n<p>Provides keywords for building, sending, and verifying REST API requests following the OKW phase model: Start -&gt; Scope -&gt; Input -&gt; Action -&gt; Verify -&gt; Stop.</p>\n<h2 id=\"Import\">Import</h2>\n<pre>\nLibrary    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI\n</pre>\n<h2 id=\"YAML Configuration\">YAML Configuration</h2>\n<pre>\nNotesAPI:\n  __self__:\n    class: okw_api_rest.library.OkwApiRestLibrary\n    base_url: <a href=\"https://practice.expandtesting.com/notes/api\">https://practice.expandtesting.com/notes/api</a>\n    content_type: application/x-www-form-urlencoded\n</pre>\n<h2 id=\"Example\">Example</h2>\n<pre>\nRESTStart              NotesAPI\nRESTSelectEndpoint     /users/login\nRESTSetValue           email        user@example.com\nRESTSetValue           password     Secret123!\nRESTSendRequest        POST\nRESTVerifyStatus       200\nRESTMemorizeValue      data.token   TOKEN\nRESTStop\n</pre>",
   "version": "0.1.0",
-  "generated": "2026-06-12T11:56:53+00:00",
+  "generated": "2026-06-18T09:35:28+00:00",
   "type": "LIBRARY",
   "scope": "GLOBAL",
   "docFormat": "HTML",
@@ -72,6 +72,30 @@
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
       "lineno": 633
+    },
+    {
+      "name": "RESTSaveResponseToFile",
+      "args": [
+        {
+          "name": "filepath",
+          "type": {
+            "name": "str",
+            "typedoc": "string",
+            "nested": [],
+            "union": false
+          },
+          "defaultValue": null,
+          "kind": "POSITIONAL_OR_NAMED",
+          "required": true,
+          "repr": "filepath: str"
+        }
+      ],
+      "returnType": null,
+      "doc": "<p>Saves the HTTP response body to a local file.</p>\n<p>The response is written as raw bytes, which works correctly for both binary content (PDF, images, ZIP) and text content (JSON, XML, CSV, HTML).</p>\n<p>The file path supports OKW memory expansion (<code>$MEM{name}</code>) and environment variable expansion (<code>~</code>, <code>$ENV_VAR</code>).</p>\n<p>Parent directories are created automatically if they do not exist. If the file already exists, it is overwritten (logged as warning).</p>\n<p>Examples:</p>\n<table border=\"1\">\n<tr>\n<td>RESTSaveResponseToFile</td>\n<td>C:/temp/report.pdf</td>\n</tr>\n<tr>\n<td>RESTSaveResponseToFile</td>\n<td>$MEM{DOWNLOAD_DIR}/export.csv</td>\n</tr>\n<tr>\n<td>RESTSaveResponseToFile</td>\n<td>~/downloads/response.json</td>\n</tr>\n<tr>\n<td>RESTSaveResponseToFile</td>\n<td>$IGNORE</td>\n</tr>\n</table>",
+      "shortdoc": "Saves the HTTP response body to a local file.",
+      "tags": [],
+      "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
+      "lineno": 662
     },
     {
       "name": "RESTSelectEndpoint",
@@ -670,6 +694,7 @@
       "usages": [
         "RESTMemorizeBody",
         "RESTMemorizeValue",
+        "RESTSaveResponseToFile",
         "RESTSelectEndpoint",
         "RESTSendRequest",
         "RESTSetContext",
