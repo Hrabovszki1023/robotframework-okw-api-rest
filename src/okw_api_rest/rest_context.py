@@ -166,6 +166,11 @@ class RestContext:
             raise RuntimeError("No response available.")
         return self._response.text
 
+    def get_response_content(self) -> bytes:
+        if self._response is None:
+            raise RuntimeError("No response available. Call RESTSendRequest first.")
+        return self._response.content
+
     @staticmethod
     def _resolve_path(obj, path: str):
         for part in path.split("."):

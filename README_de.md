@@ -91,6 +91,7 @@ robot tests/REST_NotesAPI.robot
 | `RESTVerifyHeader` | Response-Header pruefen |
 | `RESTMemorizeValue` | Response-Feldwert speichern fuer `$MEM{name}` |
 | `RESTMemorizeBody` | Gesamten Response-Body speichern |
+| `RESTSaveResponseToFile` | Response-Body als lokale Datei speichern (binaersicher) |
 
 ---
 
@@ -109,6 +110,7 @@ robot tests/REST_NotesAPI.robot
 | Status | `RESTVerifyStatus` | -- |
 | Timing | `RESTVerifyResponseTime` | -- |
 | Merken | `RESTMemorizeValue` | `MemorizeValue` |
+| Speichern | `RESTSaveResponseToFile` | -- |
 | Stop | `RESTStop` | `StopApp` |
 
 ---

@@ -27,6 +27,7 @@ Keyword-driven REST API testing for OKW4Robot.
 | `RESTVerifyHeader` | Verify response header |
 | `RESTMemorizeValue` | Store response field value |
 | `RESTMemorizeBody` | Store entire response body |
+| `RESTSaveResponseToFile` | Save response body to a local file (binary-safe) |
 
 ---
 
@@ -41,7 +42,7 @@ Keyword-driven REST API testing for OKW4Robot.
 Tokens work in `RESTSetValue`, `RESTSetValueAsString`, `RESTSetFile`, `RESTSetHeader`,
 `RESTVerifyValue`, `RESTVerifyValueWCM`, `RESTVerifyValueREGX`,
 `RESTVerifyStatus`, `RESTVerifyResponseTime`, `RESTVerifyListCount`,
-and `RESTVerifyHeader`.
+`RESTVerifyHeader`, and `RESTSaveResponseToFile`.
 
 ---
 
@@ -823,6 +824,41 @@ RESTMemorizeBody    RESPONSE
 
 ---
 
+## RESTSaveResponseToFile
+
+Saves the HTTP response body to a local file. The response is written as
+raw bytes, which works correctly for both binary (PDF, images, ZIP) and
+text content (JSON, XML, CSV).
+
+| Parameter | Description |
+|---|---|
+| `filepath` | Target file path. Supports `$MEM{name}`, `~`, `$ENV_VAR`. |
+
+Parent directories are created automatically. If the file already exists,
+it is overwritten (logged as warning).
+
+```robot
+# Save JSON response
+RESTSaveResponseToFile    C:/temp/response.json
+
+# Save with memory expansion
+RESTSaveResponseToFile    $MEM{DOWNLOAD_DIR}/export.csv
+
+# Save to home directory
+RESTSaveResponseToFile    ~/downloads/report.pdf
+
+# Skip saving
+RESTSaveResponseToFile    $IGNORE
+```
+
+**Log output:**
+
+```
+RESTSaveResponseToFile: 4523 bytes -> 'C:/temp/response.json' (Content-Type: application/json; charset=utf-8)
+```
+
+---
+
 ## Complete Examples
 
 ### Example 1: Simple Registration
@@ -1042,4 +1078,5 @@ Dokument Hochladen
 | Status | `RESTVerifyStatus` | — |
 | Timing | `RESTVerifyResponseTime` | — |
 | Memorize | `RESTMemorizeValue` | `MemorizeValue` |
+| Save | `RESTSaveResponseToFile` | — |
 | Stop | `RESTStop` | `StopApp` |

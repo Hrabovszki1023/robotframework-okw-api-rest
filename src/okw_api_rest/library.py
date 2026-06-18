@@ -655,3 +655,51 @@ class OkwApiRestLibrary:
         body = ctx.get_response_body()
         _mem_store[name] = body
         logger.info(f"RESTMemorizeBody: -> $MEM{{{name}}} ({len(body)} bytes)")
+
+    # ── Save ───────────────────────────────────────────────────
+
+    @keyword("RESTSaveResponseToFile")
+    def rest_save_response_to_file(self, filepath: str):
+        """Saves the HTTP response body to a local file.
+
+        The response is written as raw bytes, which works correctly
+        for both binary content (PDF, images, ZIP) and text content
+        (JSON, XML, CSV, HTML).
+
+        The file path supports OKW memory expansion (``$MEM{name}``)
+        and environment variable expansion (``~``, ``$ENV_VAR``).
+
+        Parent directories are created automatically if they do not exist.
+        If the file already exists, it is overwritten (logged as warning).
+
+        Examples:
+        | RESTSaveResponseToFile | C:/temp/report.pdf |
+        | RESTSaveResponseToFile | $MEM{DOWNLOAD_DIR}/export.csv |
+        | RESTSaveResponseToFile | ~/downloads/response.json |
+        | RESTSaveResponseToFile | $IGNORE |
+        """
+        if _is_ignore(filepath):
+            logger.info("RESTSaveResponseToFile: $IGNORE (skipped)")
+            return
+
+        ctx = self._require_ctx()
+        filepath = _expand(filepath)
+        filepath = os.path.expanduser(os.path.expandvars(filepath))
+
+        parent = os.path.dirname(filepath)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+
+        if os.path.isfile(filepath):
+            logger.warn(f"RESTSaveResponseToFile: File exists and will be overwritten: '{filepath}'")
+
+        content = ctx.get_response_content()
+
+        with open(filepath, "wb") as f:
+            f.write(content)
+
+        content_type = ctx._response_headers.get("Content-Type", "unknown")
+        logger.info(
+            f"RESTSaveResponseToFile: {len(content)} bytes "
+            f"-> '{filepath}' (Content-Type: {content_type})"
+        )

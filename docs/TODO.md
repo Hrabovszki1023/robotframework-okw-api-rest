@@ -24,6 +24,7 @@
 | 9 | Klaerung | Cookie-Handling | Cookie-Jar ueber Requests hinweg (Session-APIs wie AQUA). Manche APIs senden Session nur als `Set-Cookie` Header, nicht im JSON-Body. Optionen: (A) `RESTMemorizeHeader`, (B) automatischer Cookie-Jar via `requests.Session` |
 | 10 | Erledigt | File Upload | `RESTSetFile` — Multipart Form-Data, Auto-MIME, Mehrfach-Upload |
 | 11 | Erledigt | OAuth 2.0 Flow | `oauth2_client_credentials` in YAML — Token wird automatisch bei RESTStart geholt |
+| 12 | Erledigt | Response als Datei speichern | `RESTSaveResponseToFile path` — Response-Body (bytes) in Datei schreiben. Pruefung via kuenftige OKW File Keywords |
 
 ---
 
@@ -44,9 +45,9 @@
 
 | # | Umsetzung | Feature | Details |
 |---|---|---|---|
-| 18 | Erledigt | REST-Keywords.md | Alle 19 Keywords + Token-Tabelle + Retry + Arrays + File Upload |
+| 18 | Erledigt | REST-Keywords.md | Alle 20 Keywords + Token-Tabelle + Retry + Arrays + File Upload |
 | 19 | Erledigt | README (EN/DE) | Alle Abschnitte aktuell |
-| 20 | Erledigt | Libdoc regenerieren | HTML + JSON mit allen 19 Keywords |
+| 20 | Erledigt | Libdoc regenerieren | HTML + JSON mit allen 20 Keywords |
 | 21 | Erledigt | AI-Prompt aktualisieren | Typ-Erkennung, Arrays, Retry, ListCount |
 | 22 | Erledigt | Capture-Workflow Doku | docs/capture-workflow.md, lokal, nicht committed |
 | 23 | Erledigt | Contract-Pruefung | Alle Dateien konsistent: Keywords, Tokens, Phasenmodell |
