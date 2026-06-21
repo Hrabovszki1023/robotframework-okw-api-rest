@@ -3,6 +3,9 @@ Library    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI
 
 *** Test Cases ***
 CRUD Operationen Auf Posts
+    [Documentation]    CRUD = Create Read Update Delete.
+    ...                Testet alle vier Grundoperationen auf Posts:
+    ...                POST (anlegen), GET (lesen), PUT/PATCH (aendern), DELETE (loeschen).
     RESTStart              JSONPlaceholder
 
     # CREATE - POST
