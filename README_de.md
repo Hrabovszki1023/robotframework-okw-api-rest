@@ -401,12 +401,16 @@ RESTVerifyResponseTime    $IGNORE  # Pruefung ueberspringen
 
 ## Request/Response Logging
 
-`RESTSendRequest` protokolliert Request und Response automatisch als
-formatiertes JSON im Robot-Log. Sensible Felder (`password`, `token`,
-`secret`) werden im Request-Body mit `***` maskiert.
+`RESTSendRequest` protokolliert Request und Response automatisch mit
+vollstaendigen Headers und formatiertem Body im Robot-Log. Sensible Felder
+(`password`, `token`, `secret`) werden im Request-Body mit `***` maskiert.
+Headers werden im Klartext geloggt fuer maximale Beobachtbarkeit.
 
 ```
 >>> POST https://dummyjson.com/auth/login
+    Headers:
+      Content-Type: application/json
+      User-Agent: python-requests/2.31.0
     Request Body:
 {
   "username": "emilys",
@@ -414,6 +418,9 @@ formatiertes JSON im Robot-Log. Sensible Felder (`password`, `token`,
 }
 
 <<< 200 OK
+    Headers:
+      Content-Type: application/json; charset=utf-8
+      Set-Cookie: accessToken=eyJ...; Path=/; HttpOnly
     Response Body:
 {
   "accessToken": "eyJ...",

@@ -21,7 +21,7 @@
 |---|---|---|---|
 | 7 | Erledigt | Array-Laenge pruefen | `RESTVerifyListCount field count` |
 | 8 | Erledigt | Retry bei Fehler | YAML-Config: `retry_count`, `retry_delay`, `retry_on` |
-| 9 | Klaerung | Cookie-Handling | Cookie-Jar ueber Requests hinweg (Session-APIs wie AQUA). Manche APIs senden Session nur als `Set-Cookie` Header, nicht im JSON-Body. Optionen: (A) `RESTMemorizeHeader`, (B) automatischer Cookie-Jar via `requests.Session` |
+| 9 | Erledigt | Cookie-Handling + Header-Logging | `requests.Session` fuer automatischen Cookie-Jar. Request- und Response-Headers im Log (Klartext). |
 | 10 | Erledigt | File Upload | `RESTSetFile` — Multipart Form-Data, Auto-MIME, Mehrfach-Upload |
 | 11 | Erledigt | OAuth 2.0 Flow | `oauth2_client_credentials` in YAML — Token wird automatisch bei RESTStart geholt |
 | 12 | Erledigt | Response als Datei speichern | `RESTSaveResponseToFile path` — Response-Body (bytes) in Datei schreiben. Pruefung via kuenftige OKW File Keywords |

@@ -3,6 +3,8 @@ from __future__ import annotations
 import mimetypes
 import os
 
+import requests
+
 
 class RestContext:
     """Holds the mutable state for one REST service session."""
@@ -20,6 +22,7 @@ class RestContext:
         self.auth = auth or {}
         self.ssl = ssl or {}
         self.retry = retry or {}
+        self._session = requests.Session()
 
         self._endpoint: str | None = None
         self._body: dict = {}

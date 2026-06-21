@@ -277,6 +277,8 @@ class OkwApiRestLibrary:
         | RESTStop |
         """
         name = self._service_name or "<unknown>"
+        if self._ctx is not None:
+            self._ctx._session.close()
         self._ctx = None
         self._service_name = None
         logger.info(f"RESTStop: Service '{name}' stopped.")

@@ -156,7 +156,7 @@ def send_request(ctx: RestContext, method: str) -> None:
 
     _log_request(method, url, headers, params, body, content_type,
                  files=ctx.get_files() if ctx.has_files() else None)
-    response = requests.request(method, url, **kwargs)
+    response = ctx._session.request(method, url, **kwargs)
 
     attempt = 1
     while response.status_code in retry_on and attempt <= retry_count:
@@ -165,7 +165,7 @@ def send_request(ctx: RestContext, method: str) -> None:
             f"(waiting {retry_delay_ms}ms)"
         )
         time.sleep(retry_delay_ms / 1000.0)
-        response = requests.request(method, url, **kwargs)
+        response = ctx._session.request(method, url, **kwargs)
         attempt += 1
 
     ctx.store_response(response)
@@ -222,6 +222,11 @@ def _log_request(method, url, headers, params, body, content_type, files=None):
     """Log request details as formatted JSON to Robot log."""
     parts = [f">>> {method} {url}"]
 
+    if headers:
+        parts.append("    Headers:")
+        for k, v in headers.items():
+            parts.append(f"      {k}: {v}")
+
     if params:
         parts.append(f"    Query: {json.dumps(params, ensure_ascii=False)}")
 
@@ -246,6 +251,11 @@ def _log_request(method, url, headers, params, body, content_type, files=None):
 def _log_response(response):
     """Log response status and body as formatted JSON to Robot log."""
     parts = [f"<<< {response.status_code} {response.reason}"]
+
+    if response.headers:
+        parts.append("    Headers:")
+        for k, v in response.headers.items():
+            parts.append(f"      {k}: {v}")
 
     body = response.text
     if body:
