@@ -7,6 +7,8 @@ Keyword-driven REST API testing for [OKW4Robot](https://github.com/Hrabovszki102
 One set of keywords covers the complete REST API test lifecycle:
 **Start -> Scope -> Input -> Action -> Verify -> Memorize -> Stop**.
 
+[Keyword Documentation (Libdoc)](https://hrabovszki1023.github.io/robotframework-okw-api-rest/OkwApiRestLibrary.html)
+
 ---
 
 ## Installation
