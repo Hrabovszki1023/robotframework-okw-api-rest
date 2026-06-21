@@ -31,6 +31,7 @@ classifiers = [
   "Framework :: Robot Framework",
   "Framework :: Robot Framework :: Library",
   "Topic :: Software Development :: Testing",
+  "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 ]
 
 [project.urls]
