@@ -1,6 +1,6 @@
 # robotframework-okw-api-rest
 
-> English version: [README.md](README.md)
+> English version: [README.md](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/README.md)
 
 Keyword-gesteuertes REST-API-Testing fuer [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot).
 
@@ -502,11 +502,11 @@ Die System-Prompts fuer die Testgenerierung werden zentral in
 
 ## Dokumentation
 
-- [Keyword-Spezifikation](docs/rest-keywords.md) -- vollstaendige Keyword-Referenz
-- [Keyword-API (libdoc)](docs/OkwApiRestLibrary.html) -- automatisch generiert aus Docstrings
+- [Keyword-Spezifikation](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/docs/rest-keywords.md) -- vollstaendige Keyword-Referenz
+- [Keyword-API (libdoc)](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/docs/OkwApiRestLibrary.html) -- automatisch generiert aus Docstrings
 
 ---
 
 ## Lizenz
 
-Siehe [LICENSE](LICENSE).
+Siehe [LICENSE](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/LICENSE).
