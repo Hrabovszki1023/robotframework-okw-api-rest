@@ -503,7 +503,7 @@ Die System-Prompts fuer die Testgenerierung werden zentral in
 ## Dokumentation
 
 - [Keyword-Spezifikation](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/docs/rest-keywords.md) -- vollstaendige Keyword-Referenz
-- [Keyword-API (libdoc)](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/docs/OkwApiRestLibrary.html) -- automatisch generiert aus Docstrings
+- [Keyword-API (libdoc)](https://hrabovszki1023.github.io/robotframework-okw-api-rest/OkwApiRestLibrary.html) -- automatisch generiert aus Docstrings
 
 ---
 
