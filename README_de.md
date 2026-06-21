@@ -492,6 +492,14 @@ Login Und Note Erstellen
 
 ---
 
+## KI-Testgenerierung
+
+Testfaelle koennen mit jeder KI (Claude, ChatGPT, Copilot, ...) generiert werden.
+Die System-Prompts fuer die Testgenerierung werden zentral in
+[`robotframework-okw4robot/prompts/`](https://github.com/Hrabovszki1023/robotframework-okw4robot/tree/main/prompts) gepflegt.
+
+---
+
 ## Dokumentation
 
 - [Keyword-Spezifikation](docs/rest-keywords.md) -- vollstaendige Keyword-Referenz

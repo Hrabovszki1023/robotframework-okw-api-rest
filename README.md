@@ -492,6 +492,14 @@ Login And Create Note
 
 ---
 
+## AI Test Generation
+
+Test cases can be generated with any LLM (Claude, ChatGPT, Copilot, ...).
+The system prompts for test generation are maintained centrally in
+[`robotframework-okw4robot/prompts/`](https://github.com/Hrabovszki1023/robotframework-okw4robot/tree/main/prompts).
+
+---
+
 ## Documentation
 
 - [Keyword Specification](docs/rest-keywords.md) -- full keyword reference
