@@ -67,6 +67,15 @@ class OkwApiRestLibrary:
     Provides keywords for building, sending, and verifying REST API requests
     following the OKW phase model: Start -> Scope -> Input -> Action -> Verify -> Stop.
 
+    = Runnable Examples =
+
+    Complete ``.robot`` examples for this library are available in the
+    [https://github.com/Hrabovszki1023/okw-examples/tree/master/rest-api|okw-examples]
+    repository. Install and run:
+
+    | pip install -r requirements.txt
+    | robot rest-api/
+
     = Import =
 
     | Library    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI
