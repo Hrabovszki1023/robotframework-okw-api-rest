@@ -1,9 +1,9 @@
 {
   "specversion": 3,
   "name": "okw_api_rest.library.OkwApiRestLibrary",
-  "doc": "<p>OKW keyword-driven REST API testing library.</p>\n<p>Provides keywords for building, sending, and verifying REST API requests following the OKW phase model: Start -&gt; Scope -&gt; Input -&gt; Action -&gt; Verify -&gt; Stop.</p>\n<h2 id=\"Import\">Import</h2>\n<pre>\nLibrary    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI\n</pre>\n<h2 id=\"YAML Configuration\">YAML Configuration</h2>\n<pre>\nNotesAPI:\n  __self__:\n    class: okw_api_rest.library.OkwApiRestLibrary\n    base_url: <a href=\"https://practice.expandtesting.com/notes/api\">https://practice.expandtesting.com/notes/api</a>\n    content_type: application/x-www-form-urlencoded\n</pre>\n<h2 id=\"Example\">Example</h2>\n<pre>\nRESTStart              NotesAPI\nRESTSelectEndpoint     /users/login\nRESTSetValue           email        user@example.com\nRESTSetValue           password     Secret123!\nRESTSendRequest        POST\nRESTVerifyStatus       200\nRESTMemorizeValue      data.token   TOKEN\nRESTStop\n</pre>",
+  "doc": "<p>OKW keyword-driven REST API testing library.</p>\n<p>Provides keywords for building, sending, and verifying REST API requests following the OKW phase model: Start -&gt; Scope -&gt; Input -&gt; Action -&gt; Verify -&gt; Stop.</p>\n<h2 id=\"Runnable Examples\">Runnable Examples</h2>\n<p>Complete <code>.robot</code> examples for this library are available in the <a href=\"https://github.com/Hrabovszki1023/okw-examples/tree/master/rest-api\">okw-examples</a> repository. Install and run:</p>\n<pre>\npip install -r requirements.txt\nrobot rest-api/\n</pre>\n<h2 id=\"AI Test Generation\">AI Test Generation</h2>\n<p>Test cases can be generated with any LLM (Claude, ChatGPT, Copilot, ...). The system prompts for test generation are maintained centrally in <a href=\"https://github.com/Hrabovszki1023/robotframework-okw4robot/tree/main/prompts\">okw4robot/prompts/</a>.</p>\n<p>Copy the prompt into your LLM and describe what you want to test in natural language. The LLM produces a ready-to-run <code>.robot</code> file with all OKW keywords.</p>\n<h2 id=\"Import\">Import</h2>\n<pre>\nLibrary    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI\n</pre>\n<h2 id=\"YAML Configuration\">YAML Configuration</h2>\n<pre>\nNotesAPI:\n  __self__:\n    class: okw_api_rest.library.OkwApiRestLibrary\n    base_url: <a href=\"https://practice.expandtesting.com/notes/api\">https://practice.expandtesting.com/notes/api</a>\n    content_type: application/x-www-form-urlencoded\n</pre>\n<h2 id=\"Example\">Example</h2>\n<pre>\nRESTStart              NotesAPI\nRESTSelectEndpoint     /users/login\nRESTSetValue           email        user@example.com\nRESTSetValue           password     Secret123!\nRESTSendRequest        POST\nRESTVerifyStatus       200\nRESTMemorizeValue      data.token   TOKEN\nRESTStop\n</pre>",
   "version": "0.1.0",
-  "generated": "2026-06-18T09:35:28+00:00",
+  "generated": "2026-06-22T11:03:19+00:00",
   "type": "LIBRARY",
   "scope": "GLOBAL",
   "docFormat": "HTML",
@@ -34,7 +34,7 @@
       "shortdoc": "Stores the entire response body as a string.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 648
+      "lineno": 668
     },
     {
       "name": "RESTMemorizeValue",
@@ -71,7 +71,7 @@
       "shortdoc": "Stores a response field value under a symbolic name.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 633
+      "lineno": 653
     },
     {
       "name": "RESTSaveResponseToFile",
@@ -95,7 +95,7 @@
       "shortdoc": "Saves the HTTP response body to a local file.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 662
+      "lineno": 682
     },
     {
       "name": "RESTSelectEndpoint",
@@ -119,7 +119,7 @@
       "shortdoc": "Selects the API endpoint for the next request.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 287
+      "lineno": 307
     },
     {
       "name": "RESTSendRequest",
@@ -143,7 +143,7 @@
       "shortdoc": "Sends the prepared HTTP request.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 460
+      "lineno": 480
     },
     {
       "name": "RESTSetContext",
@@ -167,7 +167,7 @@
       "shortdoc": "Sets the context path for subsequent SetValue/VerifyValue calls.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 421
+      "lineno": 441
     },
     {
       "name": "RESTSetFile",
@@ -230,7 +230,7 @@
       "shortdoc": "Sets a file field for multipart form-data upload.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 389
+      "lineno": 409
     },
     {
       "name": "RESTSetHeader",
@@ -267,7 +267,7 @@
       "shortdoc": "Sets a request header for the next request.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 438
+      "lineno": 458
     },
     {
       "name": "RESTSetValue",
@@ -304,7 +304,7 @@
       "shortdoc": "Sets a request body field or query parameter with auto type detection.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 305
+      "lineno": 325
     },
     {
       "name": "RESTSetValueAsList",
@@ -341,7 +341,7 @@
       "shortdoc": "Sets a request body field as a JSON array.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 368
+      "lineno": 388
     },
     {
       "name": "RESTSetValueAsString",
@@ -378,7 +378,7 @@
       "shortdoc": "Sets a request body field as string, without type conversion.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 343
+      "lineno": 363
     },
     {
       "name": "RESTStart",
@@ -428,7 +428,7 @@
       "shortdoc": "Starts a REST service session.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 184
+      "lineno": 202
     },
     {
       "name": "RESTStop",
@@ -438,7 +438,7 @@
       "shortdoc": "Stops the REST service and releases resources.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 273
+      "lineno": 291
     },
     {
       "name": "RESTVerifyHeader",
@@ -475,7 +475,7 @@
       "shortdoc": "Verifies a response header value.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 614
+      "lineno": 634
     },
     {
       "name": "RESTVerifyListCount",
@@ -512,7 +512,7 @@
       "shortdoc": "Verifies the number of elements in a JSON array field.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 585
+      "lineno": 605
     },
     {
       "name": "RESTVerifyResponseTime",
@@ -536,7 +536,7 @@
       "shortdoc": "Verifies that the response time is below the given threshold.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 562
+      "lineno": 582
     },
     {
       "name": "RESTVerifyStatus",
@@ -560,7 +560,7 @@
       "shortdoc": "Verifies the HTTP status code of the response.",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 541
+      "lineno": 561
     },
     {
       "name": "RESTVerifyValue",
@@ -597,7 +597,7 @@
       "shortdoc": "Verifies a response field value (exact match).",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 485
+      "lineno": 505
     },
     {
       "name": "RESTVerifyValueREGX",
@@ -634,7 +634,7 @@
       "shortdoc": "Verifies a response field value (regular expression match).",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 524
+      "lineno": 544
     },
     {
       "name": "RESTVerifyValueWCM",
@@ -671,7 +671,7 @@
       "shortdoc": "Verifies a response field value (wildcard match: ``*``, ``?``).",
       "tags": [],
       "source": "D:\\work\\okw\\robotframework\\robotframework-okw-api-rest\\src\\okw_api_rest\\library.py",
-      "lineno": 507
+      "lineno": 527
     }
   ],
   "typedocs": [

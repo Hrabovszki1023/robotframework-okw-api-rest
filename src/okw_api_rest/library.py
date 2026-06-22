@@ -76,6 +76,15 @@ class OkwApiRestLibrary:
     | pip install -r requirements.txt
     | robot rest-api/
 
+    = AI Test Generation =
+
+    Test cases can be generated with any LLM (Claude, ChatGPT, Copilot, ...).
+    The system prompts for test generation are maintained centrally in
+    [https://github.com/Hrabovszki1023/robotframework-okw4robot/tree/main/prompts|okw4robot/prompts/].
+
+    Copy the prompt into your LLM and describe what you want to test in natural language.
+    The LLM produces a ready-to-run ``.robot`` file with all OKW keywords.
+
     = Import =
 
     | Library    okw_api_rest.library.OkwApiRestLibrary    WITH NAME    RESTAPI
