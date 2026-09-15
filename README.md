@@ -1,11 +1,19 @@
 # robotframework-okw-api-rest
 
+[![PyPI](https://img.shields.io/pypi/v/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
+[![Python](https://img.shields.io/pypi/pyversions/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
+
 > Deutsche Version: [README_de.md](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/README_de.md)
 
-Keyword-driven REST API testing for [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot).
+Keyword-driven REST API testing for [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot) — one set of keywords for the complete REST lifecycle.
 
-One set of keywords covers the complete REST API test lifecycle:
-**Start -> Scope -> Input -> Action -> Verify -> Memorize -> Stop**.
+## Signal vs. NOISE
+
+| Signal (your test) | NOISE (hidden in YAML) |
+|---|---|
+| `RESTSetValue email user@test.com` | Base URL, content type, auth headers |
+| `RESTSendRequest POST` | requests.Session, retry logic, SSL config |
+| `RESTVerifyStatus 200` | Response parsing, status code extraction |
 
 [Keyword Documentation (Libdoc)](https://hrabovszki1023.github.io/robotframework-okw-api-rest/OkwApiRestLibrary.html)
 
@@ -501,6 +509,14 @@ The system prompts for test generation are maintained centrally in
 [`robotframework-okw4robot/prompts/`](https://github.com/Hrabovszki1023/robotframework-okw4robot/tree/main/prompts).
 
 ---
+
+## Runnable Examples
+
+[okw-examples/rest-api/](https://github.com/Hrabovszki1023/okw-examples/tree/main/rest-api/) — health check, CRUD, authentication, tokens.
+
+## Handbuch
+
+[OKW4Robot Handbuch](https://hrabovszki1023.github.io/okw-examples/) — step-by-step guide (German).
 
 ## Documentation
 
