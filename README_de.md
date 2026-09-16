@@ -6,10 +6,15 @@
 
 > English version: [README.md](README.md)
 
-Keyword-gesteuertes REST-API-Testing für [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot).
+Keyword-gesteuertes REST-API-Testing für [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot) — ein Satz Keywords für den kompletten REST-Lebenszyklus.
 
-Ein Satz Keywords deckt den kompletten REST-API-Testlebenszyklus ab:
-**Start -> Scope -> Input -> Action -> Verify -> Memorize -> Stop**.
+## Signal vs. NOISE
+
+| Signal (dein Test) | NOISE (versteckt in YAML) |
+|---|---|
+| `RESTSetValue email user@test.com` | Basis-URL, Content-Type, Auth-Header |
+| `RESTSendRequest POST` | requests.Session, Retry-Logik, SSL-Konfiguration |
+| `RESTVerifyStatus 200` | Response-Parsing, Status-Code-Extraktion |
 
 [Keyword-Dokumentation (Libdoc)](https://hrabovszki1023.github.io/robotframework-okw-api-rest/OkwApiRestLibrary.html)
 
@@ -21,13 +26,13 @@ Ein Satz Keywords deckt den kompletten REST-API-Testlebenszyklus ab:
 pip install robotframework-okw-api-rest
 ```
 
-Oder editierbar (fuer Entwicklung):
+Oder editierbar (für Entwicklung):
 
 ```bash
 pip install -e Pfad/zu/robotframework-okw-api-rest
 ```
 
-### Abhaengigkeiten
+### Abhängigkeiten
 
 - Python >= 3.10
 - robotframework >= 6.0
@@ -66,7 +71,7 @@ Gesundheitscheck
     RESTStop
 ```
 
-### 3. Ausfuehren
+### 3. Ausführen
 
 ```bash
 robot tests/REST_NotesAPI.robot
@@ -80,30 +85,30 @@ robot tests/REST_NotesAPI.robot
 |---|---|
 | `RESTStart` | REST-Service starten (YAML laden, Basis-URL) |
 | `RESTStop` | REST-Service stoppen |
-| `RESTSelectEndpoint` | Endpoint-Pfad waehlen |
+| `RESTSelectEndpoint` | Endpoint-Pfad wählen |
 | `RESTSetValue` | Request-Body-Feld oder Query-Parameter setzen (Auto-Typ-Erkennung) |
 | `RESTSetValueAsString` | Request-Body-Feld setzen (immer String, keine Konvertierung) |
 | `RESTSetValueAsList` | Request-Body-Feld als JSON-Array setzen |
-| `RESTSetFile` | Datei-Feld fuer Multipart-Upload setzen |
+| `RESTSetFile` | Datei-Feld für Multipart-Upload setzen |
 | `RESTSetContext` | In verschachteltes JSON-Objekt navigieren |
 | `RESTSetHeader` | Request-Header setzen |
 | `RESTSendRequest` | HTTP-Request senden (GET, POST, PUT, PATCH, DELETE) |
-| `RESTVerifyValue` | Response-Feldwert pruefen (exakter Vergleich) |
-| `RESTVerifyValueWCM` | Response-Feldwert pruefen (Wildcard: `*`, `?`) |
-| `RESTVerifyValueREGX` | Response-Feldwert pruefen (regulaerer Ausdruck) |
-| `RESTVerifyStatus` | HTTP-Statuscode pruefen |
-| `RESTVerifyResponseTime` | Response-Zeit unter Schwellwert pruefen (ms) |
-| `RESTVerifyListCount` | Anzahl Elemente in einem JSON-Array pruefen |
-| `RESTVerifyHeader` | Response-Header pruefen |
-| `RESTMemorizeValue` | Response-Feldwert speichern fuer `$MEM{name}` |
+| `RESTVerifyValue` | Response-Feldwert prüfen (exakter Vergleich) |
+| `RESTVerifyValueWCM` | Response-Feldwert prüfen (Wildcard: `*`, `?`) |
+| `RESTVerifyValueREGX` | Response-Feldwert prüfen (regulärer Ausdruck) |
+| `RESTVerifyStatus` | HTTP-Statuscode prüfen |
+| `RESTVerifyResponseTime` | Response-Zeit unter Schwellwert prüfen (ms) |
+| `RESTVerifyListCount` | Anzahl Elemente in einem JSON-Array prüfen |
+| `RESTVerifyHeader` | Response-Header prüfen |
+| `RESTMemorizeValue` | Response-Feldwert speichern für `$MEM{name}` |
 | `RESTMemorizeBody` | Gesamten Response-Body speichern |
-| `RESTSaveResponseToFile` | Response-Body als lokale Datei speichern (binaersicher) |
+| `RESTSaveResponseToFile` | Response-Body als lokale Datei speichern (binärsicher) |
 
 ---
 
 ## Phasenmodell
 
-| Phase | REST Keyword | GUI-Aequivalent |
+| Phase | REST Keyword | GUI-Äquivalent |
 |---|---|---|
 | Start | `RESTStart` | `StartApp` |
 | Scope | `RESTSelectEndpoint` | `SelectWindow` |
@@ -112,7 +117,7 @@ robot tests/REST_NotesAPI.robot
 | Header | `RESTSetHeader` | -- |
 | Datei | `RESTSetFile` | -- |
 | Aktion | `RESTSendRequest` | `ClickOn` |
-| Pruefen | `RESTVerifyValue` | `VerifyValue` |
+| Prüfen | `RESTVerifyValue` | `VerifyValue` |
 | Status | `RESTVerifyStatus` | -- |
 | Timing | `RESTVerifyResponseTime` | -- |
 | Merken | `RESTMemorizeValue` | `MemorizeValue` |
@@ -125,7 +130,7 @@ robot tests/REST_NotesAPI.robot
 
 | Token | Verhalten |
 |---|---|
-| `$IGNORE` | Keyword wird uebersprungen (Feld wird nicht gesendet) |
+| `$IGNORE` | Keyword wird übersprungen (Feld wird nicht gesendet) |
 | `$EMPTY` | Feld wird explizit auf leeren String gesetzt |
 | `$NULL` | Feld wird explizit auf JSON `null` gesetzt |
 
@@ -171,7 +176,7 @@ RESTSetValue           scores[2]    15
 RESTSetValueAsList     items
 ```
 
-Array-Laenge pruefen mit `RESTVerifyListCount`:
+Array-Länge prüfen mit `RESTVerifyListCount`:
 
 ```robot
 RESTVerifyListCount    todos    3        # todos hat 3 Elemente
@@ -204,8 +209,8 @@ RESTSetFile    attachments    foto2.jpg
 RESTSetFile    data    export.bin    application/octet-stream
 ```
 
-Der MIME-Type wird automatisch aus der Dateiendung erkannt. Pfade unterstuetzen `~` und `$ENV_VAR`.
-Dateiinhalt wird im Robot-Log angezeigt (Text lesbar, Binaer als Hex).
+Der MIME-Type wird automatisch aus der Dateiendung erkannt. Pfade unterstützen `~` und `$ENV_VAR`.
+Dateiinhalt wird im Robot-Log angezeigt (Text lesbar, Binär als Hex).
 
 ---
 
@@ -230,7 +235,7 @@ Response-Werte speichern und in nachfolgenden Requests nutzen:
 # Token aus Login-Response speichern
 RESTMemorizeValue    data.token    TOKEN
 
-# Im naechsten Request verwenden
+# Im nächsten Request verwenden
 RESTSetHeader        x-auth-token    $MEM{TOKEN}
 RESTSelectEndpoint   /notes/$MEM{NOTE_ID}
 ```
@@ -287,7 +292,7 @@ Fehlende Email
     RESTVerifyStatus    400
 ```
 
-Drei Stufen: kein Argument = Default wird gesendet, eigener Wert = ueberschreibt Default, `$IGNORE` = Feld wird nicht gesendet.
+Drei Stufen: kein Argument = Default wird gesendet, eigener Wert = überschreibt Default, `$IGNORE` = Feld wird nicht gesendet.
 
 ---
 
@@ -296,7 +301,7 @@ Drei Stufen: kein Argument = Default wird gesendet, eigener Wert = ueberschreibt
 Credentials und URLs werden per Environment-Datei vom Service-YAML
 getrennt — wie `~/.ssh/` die Keys aus den Projekten heraushalt.
 
-### Service-YAML (sicher fuer Repo)
+### Service-YAML (sicher für Repo)
 
 ```yaml
 NotesAPI:
@@ -320,9 +325,9 @@ CONTENT_TYPE: application/x-www-form-urlencoded
 RESTStart    NotesAPI    env-test
 ```
 
-### Suchordnung fuer Env-Dateien
+### Suchordnung für Env-Dateien
 
-| Prioritaet | Pfad | Zweck |
+| Priorität | Pfad | Zweck |
 |---|---|---|
 | 1 | `~/.okw/env/` | Userprofil (sicher) |
 | 2 | `$OKW_ENV_DIR` | CI/CD Override |
@@ -363,7 +368,7 @@ scope: read write
 
 `RESTStart` holt den Token automatisch — der Testcode merkt nichts von OAuth.
 
-Fuer dynamische Token (Login-Flow) `RESTMemorizeValue` + `RESTSetHeader` verwenden.
+Für dynamische Token (Login-Flow) `RESTMemorizeValue` + `RESTSetHeader` verwenden.
 
 ---
 
@@ -376,7 +381,7 @@ client_key: ~/.okw/certs/client.key
 ca_bundle: ~/.okw/certs/ca-bundle.pem    # Custom CA
 ```
 
-Pfade unterstuetzen `~` und `$ENV_VAR` Expansion.
+Pfade unterstützen `~` und `$ENV_VAR` Expansion.
 
 ### Verzeichnisstruktur im Userprofil
 
@@ -393,14 +398,14 @@ Pfade unterstuetzen `~` und `$ENV_VAR` Expansion.
 
 ---
 
-## Response-Zeit pruefen
+## Response-Zeit prüfen
 
-Pruefen ob die API innerhalb akzeptabler Zeit antwortet:
+Prüfen ob die API innerhalb akzeptabler Zeit antwortet:
 
 ```robot
 RESTSendRequest        GET
 RESTVerifyResponseTime    500      # Antwort muss unter 500ms sein
-RESTVerifyResponseTime    $IGNORE  # Pruefung ueberspringen
+RESTVerifyResponseTime    $IGNORE  # Prüfung überspringen
 ```
 
 ---
@@ -408,9 +413,9 @@ RESTVerifyResponseTime    $IGNORE  # Pruefung ueberspringen
 ## Request/Response Logging
 
 `RESTSendRequest` protokolliert Request und Response automatisch mit
-vollstaendigen Headers und formatiertem Body im Robot-Log. Sensible Felder
+vollständigen Headers und formatiertem Body im Robot-Log. Sensible Felder
 (`password`, `token`, `secret`) werden im Request-Body mit `***` maskiert.
-Headers werden im Klartext geloggt fuer maximale Beobachtbarkeit.
+Headers werden im Klartext geloggt für maximale Beobachtbarkeit.
 
 ```
 >>> POST https://dummyjson.com/auth/login
@@ -439,7 +444,7 @@ Headers werden im Klartext geloggt fuer maximale Beobachtbarkeit.
 ## Retry bei Fehler
 
 Automatische Wiederholung bei transienten HTTP-Fehlern (429, 502, 503, etc.).
-Im YAML konfiguriert — der Testcode bleibt unveraendert.
+Im YAML konfiguriert — der Testcode bleibt unverändert.
 
 ```yaml
 MeineAPI:
@@ -455,11 +460,11 @@ MeineAPI:
 |---|---|---|
 | `retry_count` | 0 (aus) | Maximale Anzahl Wiederholungen |
 | `retry_delay` | 1000 | Wartezeit zwischen Versuchen in Millisekunden |
-| `retry_on` | (keine) | Status-Codes die einen Retry ausloesen |
+| `retry_on` | (keine) | Status-Codes die einen Retry auslösen |
 
 ---
 
-## Vollstaendiges Beispiel: Login + CRUD
+## Vollständiges Beispiel: Login + CRUD
 
 ```robot
 *** Settings ***
@@ -487,7 +492,7 @@ Login Und Note Erstellen
     RESTVerifyStatus       200
     RESTMemorizeValue      data.id      NOTE_ID
 
-    # Note loeschen
+    # Note löschen
     RESTSelectEndpoint     /notes/$MEM{NOTE_ID}
     RESTSetHeader          x-auth-token    $MEM{TOKEN}
     RESTSendRequest        DELETE
@@ -500,19 +505,26 @@ Login Und Note Erstellen
 
 ## KI-Testgenerierung
 
-Testfaelle koennen mit jeder KI (Claude, ChatGPT, Copilot, ...) generiert werden.
-Die System-Prompts fuer die Testgenerierung werden zentral in
+Testfälle können mit jeder KI (Claude, ChatGPT, Copilot, ...) generiert werden.
+Die System-Prompts für die Testgenerierung werden zentral in
 [`robotframework-okw4robot/prompts/`](https://github.com/Hrabovszki1023/robotframework-okw4robot/tree/main/prompts) gepflegt.
 
 ---
 
+## Lauffähige Beispiele
+
+[okw-examples/rest-api/](https://github.com/Hrabovszki1023/okw-examples/tree/main/rest-api/) — Health Check, CRUD, Authentifizierung, Tokens.
+
+## Handbuch
+
+[OKW4Robot Handbuch](https://hrabovszki1023.github.io/okw-examples/) — Schritt-für-Schritt-Anleitung.
+
 ## Dokumentation
 
-- [Keyword-Spezifikation](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/docs/rest-keywords.md) -- vollstaendige Keyword-Referenz
-- [Keyword-API (libdoc)](https://hrabovszki1023.github.io/robotframework-okw-api-rest/OkwApiRestLibrary.html) -- automatisch generiert aus Docstrings
-
----
+- [Keyword-Spezifikation](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/docs/rest-keywords.md) — vollständige Keyword-Referenz
+- [Keyword-API (libdoc)](https://hrabovszki1023.github.io/robotframework-okw-api-rest/OkwApiRestLibrary.html) — automatisch generiert aus Docstrings
 
 ## Lizenz
 
-Siehe [LICENSE](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/LICENSE).
+- **Community** (nicht-kommerziell): siehe [LICENSE](LICENSE)
+- **Kommerziell**: Kontakt über den Rechteinhaber
