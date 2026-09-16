@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
 [![Python](https://img.shields.io/pypi/pyversions/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 > Deutsche Version: [README_de.md](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/README_de.md)
 

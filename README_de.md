@@ -1,8 +1,12 @@
 # robotframework-okw-api-rest
 
-> English version: [README.md](https://github.com/Hrabovszki1023/robotframework-okw-api-rest/blob/main/README.md)
+[![PyPI](https://img.shields.io/pypi/v/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
+[![Python](https://img.shields.io/pypi/pyversions/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-Keyword-gesteuertes REST-API-Testing fuer [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot).
+> English version: [README.md](README.md)
+
+Keyword-gesteuertes REST-API-Testing für [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot).
 
 Ein Satz Keywords deckt den kompletten REST-API-Testlebenszyklus ab:
 **Start -> Scope -> Input -> Action -> Verify -> Memorize -> Stop**.
