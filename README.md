@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
 [![License](https://img.shields.io/badge/License-OKW_Community-orange.svg)](LICENSE)
 
-> **Deutsche Version:** [README_de.md](README_de.md)
+> **Deutsche Version:** [README.de.md](README.de.md)
 
 Keyword-driven REST API testing for [OKW4Robot](https://github.com/Hrabovszki1023/robotframework-okw4robot) — one set of keywords for the complete REST lifecycle.
 

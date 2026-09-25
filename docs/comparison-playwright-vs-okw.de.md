@@ -329,6 +329,6 @@ Programmierer sein zu muessen.
 
 ## Links
 
-- [OKW REST Keywords](../README_de.md)
+- [OKW REST Keywords](../README.de.md)
 - [Keyword-Spezifikation](rest-keywords.md)
 - [Playwright API Testing Docs](https://playwright.dev/docs/api-testing)

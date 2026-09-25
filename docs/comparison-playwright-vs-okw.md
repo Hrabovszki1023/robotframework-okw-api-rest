@@ -1,6 +1,6 @@
 # Playwright API Testing vs. OKW REST Keywords
 
-> Deutsche Version: [comparison-playwright-vs-okw_de.md](comparison-playwright-vs-okw_de.md)
+> Deutsche Version: [comparison-playwright-vs-okw.de.md](comparison-playwright-vs-okw.de.md)
 
 A side-by-side comparison of API test automation with Playwright (JavaScript)
 and OKW REST Keywords (Robot Framework).
