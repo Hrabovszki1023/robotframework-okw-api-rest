@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=65", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "robotframework-okw-api-rest"
-version = "0.1.3"
+version = "0.1.4"
 description = "REST API driver for OKW4Robot - keyword-driven REST API test automation."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -18,7 +18,8 @@ dependencies = [
 authors = [
   { name = "Zoltán Hrabovszki" }
 ]
-license = { file = "LICENSE" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Operating System :: OS Independent",
@@ -31,7 +32,6 @@ classifiers = [
   "Framework :: Robot Framework",
   "Framework :: Robot Framework :: Library",
   "Topic :: Software Development :: Testing",
-  "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 ]
 
 [project.urls]
