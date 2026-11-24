@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
 [![Python](https://img.shields.io/pypi/pyversions/robotframework-okw-api-rest)](https://pypi.org/project/robotframework-okw-api-rest/)
-[![License](https://img.shields.io/badge/License-OKW_Community-orange.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 > English version: [README.md](README.md)
 
@@ -526,5 +526,4 @@ Die System-Prompts für die Testgenerierung werden zentral in
 
 ## Lizenz
 
-- **Community** (nicht-kommerziell): siehe [LICENSE](LICENSE)
-- **Kommerziell**: Kontakt über den Rechteinhaber
+Apache-2.0. Siehe [LICENSE](LICENSE) für Details.
